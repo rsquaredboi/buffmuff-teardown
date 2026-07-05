@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Buff Muff Funnel Teardown — Full Breakdown</title>
+<style>
+:root {
+  --ink:#1a1a2e; --paper:#faf8f5; --card:#ffffff; --accent:#c2185b; --accent2:#0d7a68;
+  --muted:#6b6b7b; --line:#e8e2da; --gold:#b8860b; --flag:#fff3f5;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:-apple-system,'Helvetica Neue',Segoe UI,sans-serif; background:var(--paper); color:var(--ink); line-height:1.65; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 24px; }
+header { background:var(--ink); color:#fff; padding:64px 0 56px; }
+header .kicker { color:#f48fb1; text-transform:uppercase; letter-spacing:.18em; font-size:12px; font-weight:700; }
+header h1 { font-size:clamp(30px,5vw,52px); line-height:1.08; margin:14px 0 18px; font-weight:800; }
+header p { color:#c5c5d2; max-width:720px; font-size:17px; }
+.meta { display:flex; gap:28px; margin-top:28px; flex-wrap:wrap; }
+.meta div { font-size:13px; color:#9a9aae; } .meta b { display:block; color:#fff; font-size:16px; }
+nav { position:sticky; top:0; background:rgba(250,248,245,.95); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); z-index:50; }
+nav .wrap { display:flex; gap:4px; overflow-x:auto; padding:0 24px; }
+nav a { padding:13px 14px; font-size:13.5px; font-weight:600; color:var(--muted); text-decoration:none; white-space:nowrap; border-bottom:2px solid transparent; }
+nav a:hover { color:var(--accent); border-color:var(--accent); }
+section { padding:56px 0 8px; }
+h2 { font-size:30px; font-weight:800; margin-bottom:6px; }
+h2 .n { color:var(--accent); }
+.sub { color:var(--muted); margin-bottom:28px; max-width:760px; }
+h3 { font-size:19px; margin:26px 0 10px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:26px 28px; margin:18px 0; }
+.funnel { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; margin:26px 0; }
+.fstep { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; position:relative; }
+.fstep .tag { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--accent2); }
+.fstep h4 { font-size:16.5px; margin:8px 0 4px; }
+.fstep .price { font-size:24px; font-weight:800; color:var(--accent); }
+.fstep .was { text-decoration:line-through; color:var(--muted); font-size:14px; font-weight:400; margin-left:6px; }
+.fstep p { font-size:13.5px; color:var(--muted); margin-top:6px; }
+table { width:100%; border-collapse:collapse; font-size:14.5px; margin:14px 0; }
+th,td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+.stack li { margin:7px 0 7px 20px; }
+.flag { background:var(--flag); border:1px solid #f3c1cd; border-radius:14px; padding:22px 26px; margin:16px 0; }
+.flag h4 { color:var(--accent); margin-bottom:6px; }
+details { background:var(--card); border:1px solid var(--line); border-radius:14px; margin:14px 0; overflow:hidden; }
+summary { padding:18px 24px; font-weight:700; cursor:pointer; font-size:15.5px; }
+summary:hover { background:#f6f2ec; }
+details .inner { padding:6px 26px 24px; max-height:520px; overflow-y:auto; font-size:14.5px; }
+.seg { display:flex; gap:14px; padding:5px 0; border-bottom:1px dashed #efe9e1; }
+.seg .ts { color:var(--accent2); font-variant-numeric:tabular-nums; font-weight:700; min-width:44px; font-size:13px; padding-top:2px; }
+.copy { font-size:14px; color:#333; }
+.filters { display:flex; gap:8px; flex-wrap:wrap; margin:18px 0; }
+.filters button { border:1px solid var(--line); background:var(--card); padding:8px 16px; border-radius:99px; font-size:13.5px; font-weight:600; cursor:pointer; color:var(--muted); }
+.filters button.on { background:var(--ink); color:#fff; border-color:var(--ink); }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; }
+.g { background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+.g img { width:100%; display:block; cursor:zoom-in; aspect-ratio:1000/648; object-fit:cover; }
+.g figcaption { font-size:12px; color:var(--muted); padding:8px 12px; }
+#lightbox { position:fixed; inset:0; background:rgba(15,15,25,.93); display:none; align-items:center; justify-content:center; z-index:100; cursor:zoom-out; }
+#lightbox img { max-width:94vw; max-height:92vh; border-radius:8px; }
+.pill { display:inline-block; background:#eef6f4; color:var(--accent2); font-size:12px; font-weight:700; padding:3px 10px; border-radius:99px; margin-right:6px; }
+footer { padding:48px 0 64px; color:var(--muted); font-size:13px; border-top:1px solid var(--line); margin-top:56px; }
+.two { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media(max-width:760px) { .two { grid-template-columns:1fr; } }
+.kpi { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin:20px 0; }
+.kpi div { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+.kpi b { font-size:22px; color:var(--accent); display:block; }
+.kpi span { font-size:12.5px; color:var(--muted); }
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <div class="kicker">Funnel Teardown · Competitor Intel</div>
+  <h1>The Buff Muff Funnel<br>Every Word. Every Offer. Every Trick.</h1>
+  <p>Kim Vopni ("The Vagina Coach") · get.buffmuff.com · Pelvic-floor course funnel torn down from a live purchase walkthrough: front-end LP, checkout order bump, membership one-click upsell, and supplement backend — with full video transcripts.</p>
+  <div class="meta">
+    <div><b>4</b>Monetization layers</div>
+    <div><b>$192+</b>Max day-one cart value*</div>
+    <div><b>4 videos</b>Fully transcribed (32 min)</div>
+    <div><b>97</b>Journey screenshots</div>
+    <div><b>Jul 5, 2026</b>Captured</div>
+  </div>
+</div></header>
+
+<nav><div class="wrap">
+  <a href="#map">Funnel Map</a><a href="#lp">1 · Landing Page</a><a href="#checkout">2 · Checkout + Bump</a>
+  <a href="#upsell1">3 · Membership Upsell</a><a href="#upsell2">4 · Supplement Upsell</a>
+  <a href="#scripts">Video Scripts</a><a href="#gallery">Screenshot Gallery</a><a href="#tech">Tech &amp; Compliance</a><a href="#steal">Steal This</a>
+</div></nav>
+
+<section id="map"><div class="wrap">
+  <h2><span class="n">Funnel Map</span> &amp; Economics</h2>
+  <p class="sub">Classic low-ticket tripwire → ascension stack. The $16.95 course is the customer-acquisition offer; the money is in the bump, membership, and supplement behind it.</p>
+  <div class="funnel">
+    <div class="fstep"><div class="tag">Step 1 · Front-end</div><h4>Buff Muff Method (course)</h4><div class="price">$16.95<span class="was">$97</span></div><p>Lifetime access. Email-gate → "$80 off coupon, valid 24h". 3-min lead VSL.</p></div>
+    <div class="fstep"><div class="tag">Step 2 · Order bump</div><h4>Bladder Boss Workshop</h4><div class="price">$14<span class="was">$37</span></div><p>Pre-checked on checkout. "6-step approach to eliminating leakage."</p></div>
+    <div class="fstep"><div class="tag">Step 3 · Upsell 1</div><h4>Muff+ Membership</h4><div class="price">$147/yr<span class="was">$324</span></div><p>"You Have Been Upgraded" one-click accept. 8.7-min video gate. 30-day trial, 1-click cancel.</p></div>
+    <div class="fstep"><div class="tag">Step 4 · Upsell 2</div><h4>Buff+ Supplement</h4><div class="price">$49–204<span class="was">$67–439</span></div><p>Creatine 5g + PeptiStrong 2.4g + Fulvic Acid. 1/3/6-pouch ladder, free shipping, 60-day MBG.</p></div>
+  </div>
+  <div class="kpi">
+    <div><b>$16.95</b><span>Acquisition price point (impulse tier, under $20 — stated in VSL as deliberate)</span></div>
+    <div><b>$30.95</b><span>Observed checkout total with pre-checked bump (captured on recording)</span></div>
+    <div><b>$177.95</b><span>+ membership accept = day-one value before supplement</span></div>
+    <div><b>$294.95</b><span>Full ladder w/ 3-pack supplement — ~17× the front-end price</span></div>
+  </div>
+  <div class="card"><h3 style="margin-top:0">Why this structure works</h3>
+  <ul class="stack">
+    <li><b>Each layer sells a different dimension, so they never cannibalize:</b> course = <i>the fix</i> · bump = <i>the acute symptom</i> (bladder) · membership = <i>keeping results + community</i> · supplement = <i>speed</i> ("get rid of leaks FASTER").</li>
+    <li><b>Non-invalidating frames throughout:</b> every upsell opens with "what you just bought is perfect for you" before expanding the problem (pelvic floor → whole-body aging, bones, hormones, heart).</li>
+    <li><b>Video-gated reveals:</b> every post-purchase page hides the offer/next-step below a mandatory video ("your next steps will appear at the end of this video") — forced attention before the pitch.</li>
+    <li><b>Access withholding:</b> member's-area login is framed as arriving only after the "final step" page — maximizing upsell exposure before dopamine payoff.</li>
+  </ul></div>
+</div></section>
+
+<section id="lp"><div class="wrap">
+  <h2><span class="n">1 ·</span> Front-End LP — get.buffmuff.com/method</h2>
+  <p class="sub">Advertorial-style long-form LP. Email-gate popup ("Get $80 OFF — coupon valid 24 hours") captures the lead before the pitch. Then: lead VSL, mechanism, science, founder story, offer stack ×5 repeats, FAQ ×2.</p>
+  <div class="card">
+    <h3 style="margin-top:0">Headline architecture</h3>
+    <p class="copy"><b>Eyebrow:</b> "For Women Seeking To Restore Harmony Within Their Pelvic Floor"<br>
+    <b>Headline:</b> "The Buff Muff Method: When Kegels Failed, 6,000+ Women Turned To This Expert-Backed Routine to Finally Feel Like Themselves Again"<br>
+    <b>Deck:</b> "Recommended by pelvic floor specialists, this 10-minute routine targets the muscles Kegels often miss — helping relieve stress incontinence, urgency, and prolapse."</p>
+    <p style="margin-top:10px"><span class="pill">Enemy mechanism</span>"The Problem with Traditional Kegels" — squeeze-without-release, no diaphragm coordination, isolation vs integration. The unique mechanism is a 3-step reframe: <b>Release First → Core Breath → Movement-Based Strength</b>.</p>
+  </div>
+  <h3>Offer stack (front-end)</h3>
+  <div class="card"><ul class="stack">
+    <li>The Buff Muff Method course — lifetime access, app + webapp</li>
+    <li><b>Fast-Action Gift:</b> "Leak-Free Starter Bundle" (Start Plan + Control Routine + Progress Toolkit) — bonus named after the outcome, not the format</li>
+    <li>Pelvic Health 101 video series · Muff Score self-assessment · Bladder Diary · chair-based variants for mobility-limited buyers</li>
+    <li>Guarantee: 4-week results guarantee, full refund, <b>"you can even keep access to the content"</b></li>
+    <li>Proof: JAMA Internal Medicine study (70% reduction claim) · 3 named professional endorsements (2 pelvic physios + 1 urogynecologist, labeled "non-paid") · menopause stats (43% of women 50+)</li>
+    <li>Founder story: mother's incontinence surgery → own postpartum leaks → personal-trainer-turned-"Vagina Coach" arc with 19-year proof timeline</li>
+  </ul></div>
+  <details><summary>Full LP copy — every line (416 lines, verbatim)</summary><div class="inner copy">The Buff Muff Method<br>Get $80 OFF<br>Enter your name and email address to create an account<br>​and claim your coupon code:<br>​*Coupon valid for 24 hours<br>Type your name<br>Type your email address<br>CLAIM MY COUPON<br>Join The 28-Day Challenge<br>Start today and get $80 OFF<br>Hours<br>Minutes<br>Seconds<br>For Women Seeking To Restore Harmony Within Their Pelvic Floor<br>The Buff Muff Method:<br>When Kegels Failed, 6,000+ Women Turned To This Expert-Backed Routine to Finally Feel Like Themselves Again<br>Recommended by pelvic floor specialists, this 10-minute routine targets the muscles Kegels often miss — helping relieve stress incontinence, urgency, and prolapse, while rebuilding strength and restoring confidence.<br>⬇ Watch This To Learn More ⬇<br>Why Buff Muff Exercises Are Different from Kegels<br>🚫 The Problem with Traditional Kegels:<br>They focus on squeezing without first<br>releasing<br>tight, overworked muscles.<br>They don’t teach how to coordinate with the<br>diaphragm and deep core<br>, leading to ineffective results.<br>They isolate the pelvic floor, instead of training it to work with the rest of your body.<br>✅ How Buff Muff Exercises Fix This:<br>Step 1: Release First<br>– Before strengthening, we<br>let go of tension<br>so overactive muscles can function properly.<br>Step 2: Core Breath<br>– Unlike traditional Kegels,<br>we train your pelvic floor to work with your diaphragm and deep core<br>, so activation becomes effortless.<br>Step 3: Movement-Based Strength<br>– We don’t isolate the pelvic floor.<br>You’ll strengthen it through real-world movements<br>, so it naturally responds when you sneeze, laugh, jump, or lift.<br>Only a<br>few days left<br>Tomorrow&#x27;s Date Display<br>This offer is valid until:<br>+ Fast-Action Gift 🎁<br>Get The Buff Muff Method Today &amp; Receive Your<br>Leak-Free Starter Bundle<br>Here&#x27;s what you&#x27;ll get inside:<br>Leak-Free Start Plan:<br>Know exactly where YOUR leaks are coming from — no more guessing, no more doing every exercise and hoping something sticks<br>Leak-Free Control Routine:<br>Stop getting caught off guard — the sneeze, the laugh, the sprint to the bathroom, the walk from the car to your front door​​<br>Leak-Free Progress Toolkit<br>Stop planning your life around the nearest bathroom — and start saying yes to the things you love again<br>Only $16.95 USD Today<br>Normal Price: $97<br>(Save $80.00 today)<br>One Time Purchase - LIFETIME ACCESS<br>JOIN NOW!<br>Create Your Account<br>100% secure 256-bit encrypted checkout<br>Backed by Our 100%<br>Money Back Guarantee<br>Why Women Finally Find Success With Buff Muff Exercises<br>Most women are told to &quot;just do Kegels&quot;. But the real cause of pelvic floor dysfunction is<br>more than just weak muscles.<br>Tight, overworked, or imbalanced muscles can also cause leaks, urgency, and prolapse.<br>What Causes Pelvic Floor Dysfunction?<br>Your pelvic floor doesn’t weaken overnight.<br>Several life events and habits can break down support over time:<br>✔ Pregnancy &amp; childbirth<br>can overstretch and weaken key muscles.<br>✔ Aging &amp; menopause<br>cause tissue to thin and lose elasticity.<br>✔ Obesity &amp; chronic<br>constipation<br>increase pressure and strain.<br>✔ Rushing to the bathroom too often<br>can train your bladder to overreact.<br>✔ Squeezing the wrong muscles<br>(or holding too much tension) makes symptoms worse.<br>​If any of these sound familiar, you&#x27;re in the right place. Because from now on<br>you don’t have to accept these symptoms as &quot;just part of aging.&quot;<br>How The Buff Muff Method Stops Leaks, Urgency &amp; Prolapse<br>💧 For Stress Incontinence<br>(Leaks When You Cough, Laugh, or Exercise)<br>🚫 The Problem:<br>If your pelvic floor is too weak, or too tight, it can’t absorb pressure, causing leaks.<br>✅ How Buff Muff Fixes It:<br>Releases tight muscles first<br>, so they can activate properly.<br>Core breathwork &amp; Kegels<br>(done correctly!) retrain your pelvic floor to work with your core.<br>Posture &amp; movement training<br>help your body absorb pressure naturally.<br>⏳ For Urgency &amp; Frequency<br>(Always Rushing to the Bathroom)<br>🚫 The Problem:<br>Years of running to the toilet at the first urge train your brain to panic, even when your bladder isn’t full.<br>​✅ How Buff Muff Fixes It:​​​<br>Bladder retraining techniques<br>break the habit of rushing to the bathroom.<br>Breathing &amp; relaxation exercises<br>calm the nervous system, stopping false urgency signals.<br>Hydration &amp; diet guidance<br>prevent irritation that worsens urgency.<br>⚡ For Prolapse<br>(Bulging, Heaviness, or<br>Pressure in the Pelvic Area)<br>🚫 The Problem:<br>Straining, poor posture, and weak core muscles allow pelvic organs to shift downward.<br>​​​✅ How Buff Muff Fixes It:​​​<br>Hypopressive breathing techniques<br>gently reposition organs for better support.<br>Core-strengthening without straining<br>stabilizes the entire pelvic floor.<br>Proper bathroom habits &amp; posture training<br>stop worsening symptoms.<br>What About Menopause?<br>(Why Leaks Get Worse After 50)<br>Hormonal changes during menopause<br>thin and weaken the tissues<br>supporting your bladder and urethra. That’s why surveys show:<br>43% of women over 50 report urinary incontinence<br>🩺 That number jumps to 51% for women aged 65 to 80<br>Less estrogen means<br>weaker pelvic support<br>, making leaks and urgency more common.<br>Buff Muff exercises strengthen these muscles—but if you’re in menopause or postmenopause, you may need extra support.<br>Proven to Work:<br>Backed by Science<br>A study<br>in JAMA Internal Medicine<br>found that a<br>12-week pelvic floor training program reduced incontinence episodes by 70%.<br>The Buff Muff Method uses the same science-backed techniques<br>. But in a way that’s simple, effective, and<br>just 10-15 minutes a day.<br>No Matter What You’re Struggling With,<br>The Buff Muff Method Was Designed to Help<br>🚫 Whether you’re struggling with leaks, urgency, prolapse or all three<br>, The Buff Muff Method was designed to handle it.<br>🩺 Backed by science. Refined through real-world testing. Built to fit into your life.<br>No matter your age, no matter your symptoms,<br>The Buff Muff Method will help you retrain your body, regain control, and feel like yourself again.<br>​👉 Join 6,000+ women who’ve reclaimed their confidence today!<br>Tomorrow&#x27;s Date Display<br>+ Fast-Action Gift 🎁<br>Get The Buff Muff Method Today &amp; Receive Your<br>Leak-Free Starter Bundle<br>Here&#x27;s what you&#x27;ll get inside:<br>Leak-Free Start Plan<br>Know exactly where YOUR leaks are coming from<br>— no more guessing, no more doing every exercise and hoping something sticks<br>Leak-Free Control Routine<br>Stop getting caught off guard<br>— the sneeze, the laugh, the sprint to the bathroom, the walk from the car to your front door<br>Leak-Free Progress Toolkit<br>Stop planning your life around the nearest bathroom<br>— and start saying yes to the things you love again<br>Only $16.95 USD Today<br>Normal Price: $97<br>(Save $80.00 today)<br>One Time Purchase - LIFETIME ACCESS<br>JOIN NOW!<br>Create Your Account<br>100% secure 256-bit encrypted checkout<br>Backed by Our 100%<br>Money Back Guarantee<br>This Method Has Worked For Over 6,000 Women<br>Here are some of their stories:<br>How The Buff Muff Method Helps You<br>Start Reversing Pelvic Floor Dysfunction Today:<br>Inside The Buff Muff Method, you get everything you need to<br>start reversing your symptoms immediately<br>—no guesswork, no confusion.<br>﻿This holistic program equips you with tools and guidance to take control of your pelvic health, naturally.<br>Step 1: Discover<br>Quickly understand what’s REALLY causing your symptoms—and how to fix them.<br>In this foundational step, we break down the science behind pelvic floor dysfunction in simple, easy-to-follow video lessons. You’ll discover:<br>Why your symptoms exist<br>(hint: it’s more than weak muscles)<br>What actions are making them worse<br>(that no one’s told you about)<br>What you can do starting TODAY to start feeling better<br>You’ll feel empowered and in control, with a clear roadmap to reclaim your confidence.<br>Step 2: Self-Assessment<br>Find out how bad your symptoms are—and track your progress.<br>​Using our<br>Pelvic Floor Self-Assessment (Muff Score)<br>and<br>Bladder Diary<br>, you’ll uncover critical insights, including:<br>Which muscles need the most attention<br>Patterns in your bathroom habits that might be contributing to your symptoms<br>Your baseline so you can celebrate real, measurable progress over time<br>Knowing exactly where you stand is key to lasting results.<br>Step 3: Release<br>Let go of tension and retrain your pelvic floor to relax.<br>​Many of us unknowingly “grip” or overuse certain muscles, leading to pain, urgency, and discomfort. This step shows you how to:<br>Release tension in overactive pelvic muscles with simple, effective techniques<br>Coordinate your breathing to calm your body and mind while improving muscle function<br>Break free from the tightness that’s holding you back—physically and emotionally<br>You’ll feel immediate relief and a newfound sense of ease in your body.<br>Step 4: Strengthen &amp; Integrate<br>Build strength and retrain your body to work in harmony.<br>​Using short, guided exercises, you’ll:<br>Target the root causes of your symptoms with science-backed movements<br>Strengthen your pelvic floor muscles while connecting them to your core and posture<br>Integrate these exercises into your daily life for long-term, effortless results<br>This isn’t just about doing exercises—it’s about retraining your body to function the way it’s meant to, naturally and sustainably.<br>The Buff Muff Method Is Recommended By Pelvic Floor Professionals<br>The following are<br>non-paid endorsements:<br>&quot;Kim has created an evidence based program that is helpful for women at all stages of life. Her holistic approach is applicable for those who want to overcome issues like incontinence and prolapse and also those who want to reduce their risk. I refer all my patients to this program as it is such a valuable resource that helps keep women compliant in their exercise.&quot;<br>- Julia DiPaolo,<br>Pelvic Health Physical Therapist<br>&quot;Kim has put lot of energy and depth of knowledge into building this program to support people to access resources from the comfort and safety of their home.&quot;<br>Jodie Pulsifer,<br>Pelvic Floor Physiotherapist<br>&quot;Kim weaves together education, advocacy, and inspiration creating a call to action for all of us committed to advancing women’s pelvic wellness.&quot;<br>- Dr Darren Lazare, Urogynecologist<br>The Buff Muff Method Changed My Life...<br>When I was young, I saw my mother struggle with incontinence.<br>She shared with me her frustration, her worry, and I watched as it affected her life. She started to limit the activities she was doing.<br>She stopped running, she stopped going for long hikes or doing group activities...<br>I watched her struggle for almost 12 years.<br>Until one day she told me she was scheduled for<br>surgery<br>- a bladder sling for her incontinence...<br>After watching her go through this, I was terrified... Watching this made me not want to have children.<br>I held this belief that giving birth would ruin me<br>, and I would be forced to live with all sorts of issues after the fact.<br>I believed this for a long time, until I saw my sister in-law give birth. She had a regular, physiological birth and it was beautiful... Eye opening for me.<br>This inspired be to have children, and I&#x27;m so thankful I did.<br>Before my first birth (19 years ago), I wanted to do everything I could to avoid the issues my mom had.<br>So I exercised, I ate healthy, I did kegels and I eventually gave birth to 2 beautiful boys that I am so proud of.<br>And then it was my turn.<br>After the birth of my first son, I was surprised when I began to experience incontinence.<br>But sure enough, as I started to return to my normal activities, I noticed I would leak pee when I ran...<br>Eventually I started to limit certain activities like lifting heavy or doing any sort of jumping exercise...<br>I was a personal trainer at the time, and so just thinking about returning to training my clients was scary.<br>&quot;What if I was showing them an exercise, and pee&#x27;d on the floor?&quot;<br>This was the first time I realized how much the pelvic floor affected every area of my life.<br>I began to worry about being intimate with my husband...<br>Even though my mother wasn&#x27;t injured during surgery, I told myself there was no way I would take that route if I didn&#x27;t have to.<br>I spoke to my doctor and I got the usual recommendations<br>- a referral to a surgeon, a recommendation for bladder medication... Reassurance that this was just &quot;a normal part of the process&quot;...<br>And after reading the side effects of medication - dry eyes, dry mouth, dry vagina..... I was determined to find another way.<br>This was before the days of social media - so I set off to look at the library, to call specialists, and to look for books on the topic.<br>Thankfully, I came across a few pieces of research that confirmed my suspicions... I was also introduced to Pelvic Floor Physiotherapy at this time...<br>This was when things started to shift for me. When I began to have hope again...<br>I decided I would take all the exercises I learned, and apply the principles I had been using in fitness and personal training...<br>I committed myself to trying every exercise and incorporating it into my own fitness routine - even if I leaked.<br>And thankfully - after 3-4 weeks of exercise - my symptoms disappeared.<br>No more leaks, sleeping through the night, and I was able to exercise again.. To lift weights... And enjoy sex!<br>Throughout this process I also learned I had a uterine prolapse - where the uterus bulges down into the vagina...<br>This too I was able to fully reverse with a magical movement called the Hypopressive Method.<br>All of this was 19 years ago and I haven&#x27;t looked back since.<br>For almost 2 decades now, I&#x27;ve been sleeping through the night... I&#x27;ve been lifting heavy weights... I&#x27;ve been running and doing intense exercise... Keeping my body strong and fit - even through menopause.<br>Ever since making this discovery, and reversing my symptoms, I knew this was my new mission<br>- to spread the word about these exercises, and to teach them to my personal training clients...<br>So that&#x27;s how I became the Vagina Coach, and what has led me here...<br>Social media has allowed me to spread this knowledge far and wide, and I&#x27;m so honored and thankful I get to help so many women every single month.<br>If you&#x27;re still reading this, I want you to know there is a lot you can do.<br>You have a lot of options, and you can choose exercise and lifestyle changes OVER surgery and medication.<br>​Your body is not broken. It just needs to be reminded what to do, and how to do it<br>READY TO GET STARTED?<br>Regular Price: $97<br>Join today for only $16.95 USD<br>(Save $80)<br>JOIN NOW!<br>Create Your Account<br>Backed by Our 100%<br>Money Back Guarantee<br>About Kim Vopni<br>&quot;The Vagina Coach&quot;<br>Kim has had the privilege of working with thousands of women over the last 15+ years helping them navigate their pelvic health.<br>In 2009 she founded Kegels &amp; Cocktails™<br>and has been running live and virtual pelvic health events each year since.<br>She was the Canadian importer/distributor for the EPI-NO for 14 years<br>and was also a<br>co-founder of Bellies Inc. in 2011<br>In 2013 she launched her professional certification course<br>and has been certifying fitness and movements professionals ever since!<br>In 2023 she launched her podcast Between Two Lips<br>and enjoys the incredible conversations she has with amazing women, care providers and thought leaders in the realm of pelvic health.<br>She&#x27;s spoken at over 30 events internationally.<br>She&#x27;s authored 3 books, Your Pelvic Floor, Pregnancy Fitness, and The Inside Story. All of which provide advice for women at every stage of life.<br>She has over 400 free educational videos on YouTube, and has shared over 3,400 posts on Instagram.<br>And if you care about qualifications, here they are:<br>BA in Psychology and a Post Graduate Diploma in Health and Fitness<br>Restorative Exercise Specialist™<br>Certified Personal Trainer<br>Certified Pre/Post Natal Fitness Consultant<br>Certified Pfilates (not a typo) Instructor<br>Hypopressive Method trainer<br>Certified Menopause Support Practitioner<br>Certified Osteoporosis Fitness Specialist<br>This program has been featured in...<br>Here&#x27;s What Will Happen<br>​After You Sign Up...<br>Step 1<br>Create Your Account<br>Upon signing up, you&#x27;ll receive an email with login instructions to the website. Login and begin watching the introduction videos.<br>Watch Pelvic Health 101<br>This series of videos will outline the latest research in pelvic health, and help you understand WHY you&#x27;re doing the exercises I&#x27;ve provided. It&#x27;s only an hour of learning - and will help you customize the program to your unique issues.<br>Step 2<br>Download the Bladder Diary<br>We want to track your progress. We&#x27;ll start by outlining how many times you use the bathroom, and how many times you leak unexpectedly or have urgency.<br>Do The Pelvic Health Assessment Quiz<br>Find out what your symptoms mean and how to best tackle them.<br>Step 3<br>Learn The Foundation Exercises and Then Do Your First Workout<br>Open the app and watch the exercise videos and then follow along with the workout videos provided. These will focus on releasing tension, and building strength, while integrating your pelvic floor into whole body movement.<br>Step 4<br>Continue Daily Workouts<br>Stay consistent - it&#x27;s only 10 minutes a day.<br>Track Your Progress<br>You will notice a change and reduction in your symptoms by weeks 2 or 3.<br>Notice Side Benefits<br>Buff Muff Exercises incorporate FULL-BODY movement so you will begin to notice more tone in your muscles, improved heart rate, lower stress levels from daily endorphins and more...<br>Step 5<br>Keep going, and watch your symptoms disappear.<br>This Offer Won’t Last Long...<br>For a limited time, I&#x27;m offering the Buff Muff Method for $80 OFF.<br>I&#x27;m doing this because I want to help as many women as possible, and show them the value of these exercises.<br>I know that once you try them, you will see results and may even tell your friends...<br>And this will have a ripple effect - freeing women from pelvic floor challenges.<br>You May Be Wondering...<br>&quot;What If This Method Doesn&#x27;t Work For Me?&quot;<br>Well... That&#x27;s Why I Have...<br>The Buff Muff Guarantee<br>I don&#x27;t want anything to get in the way of you experiencing pelvic floor freedom.<br>Even though this method is only $16.95 USD... I want to take all the risk off of you today.<br>So, here&#x27;s what I&#x27;m going to offer you...<br>If you join this program, and you implement the exercises I teach you, and you do them for 4 weeks and you don&#x27;t experience any change in your symptoms...<br>Send me an email, and I&#x27;ll give you a full refund. No questions asked. You can even keep access to the content.<br>I&#x27;ve seen this program work for so many women, and I&#x27;ve offered this guarantee of every product I&#x27;ve sold.<br>And since you’ve made it this far, I&#x27;m going to assume that what I&#x27;ve shared resonates with you.<br>You&#x27;re clearly committed to restoring and reviving your pelvic health function.<br>So, what are you waiting for? Click the link below and join the program!<br>This Offer Expires on<br>Regular Price: $97<br>Join today for only $16.95 USD<br>​(Save $80)<br>JOIN NOW<br>Create Your Account<br>With the Buff Muff Method, you&#x27;re getting...​<br>A complete understanding of the root cause of your pelvic floor issues<br>Targeted exercises that take less than 15 minutes a day<br>How to use breathing to relax and strengthen the pelvic floor<br>How to improve your posture to reduce back pain and pelvic floor issues<br>Exercise demonstration videos of the most effective Buff Muff Exercises<br>How to massage your pelvic floor<br>The Muff Score - Pelvic Floor Self-Assessment<br>How to poop better - diet and lifestyle techniques<br>Sample Buff Muff workouts<br>Chair based exercises for mobility limited people<br>READY TO GET STARTED?<br>Regular Price: $97<br>Join today for only $16.95 USD<br>JOIN NOW<br>Create Your Account<br>Frequently Asked Questions<br>Is this a subscription or one time payment?<br>This is a one time payment of $16.95 USD for lifetime access the Buff Muff Method.<br>How long will I have access to this content?<br>Until the end of time.<br>What Currency do you charge in?<br>As an online business with a global customer base, we charge in USD which is the generally accepted currency for international business.<br>Do I need any special equipment?<br>The exercises and workouts I have provided inside require no equipment and can be done pretty much anywhere.<br>When is the best time to start?<br>Today is the best time to start. You will get login details sent to you via email that will open up immediate access to the Buff Muff app. You will start with some learning in Pelvic Health 101 (it is several small video lessons of about 2-5 minutes each and will take about an hour to complete).<br>Once you have completed Pelvic Health 101 you can get started on the workouts.<br>Is this available worldwide?<br>Yep! If you can download an app to your phone you can join the Buff Muff Method.<br>Can I watch the workouts on my TV, computer or iPad?<br>Yep! You can login to the webapp. Alternatively you can screencast your phone to your tv.<br>How long do I have access to the Buff Muff Method?<br>You have lifetime access to the Buff Muff Method inside the Buff Muff App.<br>Join today for only $16.95 USD<br>Regular Price: $97<br>JOIN NOW<br>Create Your Account<br>Frequently Asked Questions<br>Is this a subscription or one time payment?<br>This is a<br>one time payment of $16.95 for instant access<br>to the Buff Muff Method.<br>Do I have to pay extra for the App?<br>No, it&#x27;s completely free.<br>You can use whatever&#x27;s most convenient for you; the App, the website, or both!<br>How long will I have access to this content?<br>Until the end of time.<br>What Currency do you charge in?<br>As an online business with a global customer base, we charge in USD which is the generally accepted currency for international business.<br>Do I need any special equipment?<br>The exercises and workouts I have provided inside require no equipment and can be done pretty much anywhere.<br>When is the best time to start?<br>Today is the best time to start. You will get login details sent to you via email that will open up immediate access to the Buff Muff app. You will start with some learning in Pelvic Health 101 (it is several small video lessons of about 2-5 minutes each and will take about an hour to complete).<br>​Once you have completed Pelvic Health 101 you can get started on the workouts.<br>Is this available worldwide?<br>Yep! If you can download an app to your phone you can join the Buff Muff Method.<br>Can I watch the workouts on my TV, computer or iPad?<br>Yep! You can login to the webapp. Alternatively you can screencast your phone to your tv.<br>How long do I have access to the Buff Muff Method?<br>You have lifetime access to the Buff Muff Method inside the Buff Muff App.<br>READY TO GET STARTED?<br>Regular Price: $97<br>Join today for only $16.95 USD<br>​(SAVE $80 Today)<br>JOIN NOW<br>Create Your Account<br>Working...</div></details>
+</div></section>
+
+<section id="checkout"><div class="wrap">
+  <h2><span class="n">2 ·</span> Checkout — "July Special Deal" + Pre-Checked Bump</h2>
+  <p class="sub">Seasonal wrapper ("July Special Deal — FREE gift with your order"), support email in the header bar, value-stack restated beside the card fields.</p>
+  <div class="two">
+    <div class="card"><h3 style="margin-top:0">The order bump</h3>
+    <p class="copy">"<b>YES! Add The 'Bladder Boss Workshop' To My Order</b>" — checkbox arrives <b>pre-checked</b>.<br><br>
+    "<u>One-Time Offer</u>: Bladder leakage is one of the most common reasons women avoid exercise, skip social events, and quietly lose confidence. It's common — but it is not something you have to accept. This workshop gives you Kim's complete 6-step approach to eliminating leakage, so you can stop planning your life around the nearest bathroom. Normally $37 but available for just $14 on this page only."</p>
+    <p style="margin-top:8px"><span class="pill">Observed</span>Summary captured on recording: Method $16.95 + Bladder Boss Workshop $14.00 = <b>$30.95 total</b>.</p></div>
+    <div class="card"><h3 style="margin-top:0">Right-rail value stack</h3>
+    <ul class="stack copy">
+      <li>Lifetime access to the Buff Muff Method Online Video Course</li>
+      <li>The Bladder Diary: self-assessment tool</li>
+      <li>Habits for a Healthy Pelvic Floor (posture, breathing, hydration, constipation)</li>
+      <li>Exercise demonstration videos</li>
+      <li>Introduction to the Hypopressives Method</li>
+      <li>3 follow-along workouts</li>
+      <li>7-Day Smooth Moves Meal Plan</li>
+      <li>Exclusive community-only invites &amp; offers</li>
+      <li>30-Day Money-Back Guarantee + "SECURE PROCESSING" trust block</li>
+    </ul></div>
+  </div>
+</div></section>
+
+<section id="upsell1"><div class="wrap">
+  <h2><span class="n">3 ·</span> Upsell 1 — Muff+ Membership ($147/yr)</h2>
+  <p class="sub">URL slug <code>/welcome-buff-muff-method-d</code> (variant D of an active split test). Page title: "Important Update: New Member Welcome."</p>
+  <div class="card"><ul class="stack">
+    <li><b>Pattern interrupt:</b> "WAIT — Your Order Is Not Complete" + "watch this video before you access your purchase" (8.7-min video, offer hidden until the end).</li>
+    <li><b>Assumption close:</b> "You Have Been Upgraded To Our Muff+ Membership!" — button reads "YES — ACCEPT MY UPGRADE", not "buy".</li>
+    <li><b>Anchor:</b> $324/yr → $147/yr ("55% off", "$12.25/month equivalent"). Annual-only; no monthly option shown.</li>
+    <li><b>Welcome gift:</b> "FREE Personalized 8-week Pelvic Recovery Plan" — personalization as premium, "Available On This Page Only".</li>
+    <li><b>Friction killers:</b> "30-DAY TRIAL PERIOD — 1-CLICK CANCEL" under every button + no-questions refund (support@vaginacoach.com).</li>
+    <li><b>Stack:</b> 100+ workouts · Hypopressives · monthly 28-day challenges · Level 2 challenge · meal-plan library · "Vagina Village" expert interviews · community forum ($97) · 2×/week group coaching calls ($600) · Pelvic Surgery course ($497).</li>
+    <li><b>Skip link:</b> "No thanks, I'll skip the membership upgrade and I'll implement the exercises on my own."</li>
+    <li><b>Proof:</b> iOS/Android app-store reviews — the app's existence itself justifies recurring pricing.</li>
+  </ul></div>
+</div></section>
+
+<section id="upsell2"><div class="wrap">
+  <h2><span class="n">4 ·</span> Upsell 2 — Buff+ Supplement ($49–$204)</h2>
+  <p class="sub">URL slug <code>/final-step-33109-4</code> (variant 4). "One More Thing Before You Access The Buff Muff Method… Here's How To Get Rid Of Leaks FASTER."</p>
+  <div class="two">
+    <div class="card"><h3 style="margin-top:0">Product &amp; pricing</h3>
+    <table><tr><th>Package</th><th>Price</th><th>Per pouch</th></tr>
+    <tr><td>1 pouch · 30-day</td><td><s>$67</s> <b>$49</b></td><td>$49</td></tr>
+    <tr><td>3 pouches · 90-day <span class="pill">pushed</span></td><td><s>$238</s> <b>$117</b></td><td>$39</td></tr>
+    <tr><td>6 pouches · 180-day</td><td><s>$439</s> <b>$204</b></td><td>$34</td></tr></table>
+    <p class="copy">Formula (FAQ-disclosed doses): Creatine Monohydrate 5,000mg · PeptiStrong® (fava-bean peptide) 2,400mg · Fulvic Acid 100mg. Free shipping, 60-day money-back guarantee, "Inventory sell-out risk is high" scarcity line on the 3-pack.</p></div>
+    <div class="card"><h3 style="margin-top:0">Copy architecture</h3>
+    <ul class="stack copy">
+      <li>Personal-letter open: "Hey it's Kim again… I saved the best for last."</li>
+      <li>Positioned as <b>completing</b> the purchase: "the last step you need to complete."</li>
+      <li>Comparison table vs "generic protein powders / basic creatine" — pre-empts "I already take creatine."</li>
+      <li>Week-by-week timeline (wk 1-2 / 3-4 / 6-8) ending at "laugh without crossing your legs."</li>
+      <li>Age-matched testimonials: "Jennifer M., 53" · "Rachel K., 47" · "Sandra T., 51".</li>
+      <li>Shame-framed skip: "No, I don't want to get results faster with these natural, potent supplements."</li>
+      <li>Access carrot at the bottom: member's-area login "being sent to your email right now 🎉".</li>
+    </ul></div>
+  </div>
+</div></section>
+
+<section id="scripts"><div class="wrap">
+  <h2><span class="n">Video Scripts</span> — Word for Word</h2>
+  <p class="sub">All four funnel videos transcribed in full with timestamps (Whisper, from the live HLS streams).</p>
+  <details open><summary>▶ Lead VSL — /method page · 3:05 · "Your body is intelligent"</summary><div class="inner"><div class="seg"><span class="ts">0:00</span><span>If there was one thing I could tell every woman with incontinence and pelvic</span></div>
+<div class="seg"><span class="ts">0:03</span><span>flutus function, it would be this.</span></div>
+<div class="seg"><span class="ts">0:05</span><span>Your body is intelligent.</span></div>
+<div class="seg"><span class="ts">0:07</span><span>It can restore itself with the right guidance.</span></div>
+<div class="seg"><span class="ts">0:09</span><span>You can reverse incontinence.</span></div>
+<div class="seg"><span class="ts">0:11</span><span>You can dramatically reduce or even eliminate prolapse symptoms.</span></div>
+<div class="seg"><span class="ts">0:15</span><span>You can sleep through the night without waking to pee.</span></div>
+<div class="seg"><span class="ts">0:18</span><span>You can stop wearing pads and peeing just in case.</span></div>
+<div class="seg"><span class="ts">0:21</span><span>And you can stop planning your life around the bathroom.</span></div>
+<div class="seg"><span class="ts">0:25</span><span>You can do all of this if you follow a holistic approach.</span></div>
+<div class="seg"><span class="ts">0:29</span><span>A program that targets all of the root causes, not just a few,</span></div>
+<div class="seg"><span class="ts">0:33</span><span>and a program that puts the power in your hands.</span></div>
+<div class="seg"><span class="ts">0:36</span><span>This is exactly what my buff, muff method does in as little as 10 to 15 minutes a day.</span></div>
+<div class="seg"><span class="ts">0:42</span><span>You can improve or eliminate your symptoms.</span></div>
+<div class="seg"><span class="ts">0:45</span><span>And the exercises I share are not boring.</span></div>
+<div class="seg"><span class="ts">0:48</span><span>They&#x27;re fun and their whole body focused and they will improve not only your pelvic health,</span></div>
+<div class="seg"><span class="ts">0:53</span><span>but your bone health, your brain health and your heart health, too.</span></div>
+<div class="seg"><span class="ts">0:56</span><span>I&#x27;d like to invite you to try my buff, muff method, a holistic approach to the</span></div>
+<div class="seg"><span class="ts">1:01</span><span>pelvic floor that is designed to address all of the root causes of pelvic floor</span></div>
+<div class="seg"><span class="ts">1:06</span><span>issues like excess tension, weak muscles, constipation, poorly coordinated muscles,</span></div>
+<div class="seg"><span class="ts">1:12</span><span>diet, lifestyle and even behaviors.</span></div>
+<div class="seg"><span class="ts">1:15</span><span>In this program, you&#x27;re going to do things like breathwork and tension release</span></div>
+<div class="seg"><span class="ts">1:19</span><span>techniques and posture awareness.</span></div>
+<div class="seg"><span class="ts">1:21</span><span>You&#x27;re going to wake up certain muscles and get them reacting at the right time</span></div>
+<div class="seg"><span class="ts">1:25</span><span>with the right amount of force to prevent the leaks and support your organs.</span></div>
+<div class="seg"><span class="ts">1:29</span><span>You&#x27;re going to be energized and feel stronger and notice things like a flatter</span></div>
+<div class="seg"><span class="ts">1:33</span><span>stomach and a stronger core.</span></div>
+<div class="seg"><span class="ts">1:35</span><span>So if all of this sounds good to you and you have 15 minutes a day that you can</span></div>
+<div class="seg"><span class="ts">1:39</span><span>dedicate to yourself, then please come and join my buff, muff method.</span></div>
+<div class="seg"><span class="ts">1:43</span><span>You will not regret it.</span></div>
+<div class="seg"><span class="ts">1:45</span><span>It&#x27;s worked for thousands of women before you and I&#x27;m constantly improving it</span></div>
+<div class="seg"><span class="ts">1:49</span><span>and updating it so that you have the most up to date research and techniques</span></div>
+<div class="seg"><span class="ts">1:53</span><span>that will help you.</span></div>
+<div class="seg"><span class="ts">1:55</span><span>I&#x27;ve also made the price as accessible as I can to cover my expenses and get this</span></div>
+<div class="seg"><span class="ts">2:00</span><span>in as many hands as possible.</span></div>
+<div class="seg"><span class="ts">2:02</span><span>It&#x27;s not going to cost you hundreds or thousands of dollars.</span></div>
+<div class="seg"><span class="ts">2:05</span><span>In fact, it&#x27;s less than 20 bucks.</span></div>
+<div class="seg"><span class="ts">2:08</span><span>And if you join and you realize for whatever reason that it&#x27;s just not for you,</span></div>
+<div class="seg"><span class="ts">2:12</span><span>simply send me an email and I&#x27;ll issue you a complete refund.</span></div>
+<div class="seg"><span class="ts">2:17</span><span>I don&#x27;t want anything to get in the way of you taking your pelvic floor health</span></div>
+<div class="seg"><span class="ts">2:21</span><span>into your own hands.</span></div>
+<div class="seg"><span class="ts">2:23</span><span>I want to make sure there&#x27;s nothing holding you back from a new reality.</span></div>
+<div class="seg"><span class="ts">2:27</span><span>And so that&#x27;s why I&#x27;ve dropped the price and added a 100 percent money back guarantee.</span></div>
+<div class="seg"><span class="ts">2:33</span><span>So what do you have to lose?</span></div>
+<div class="seg"><span class="ts">2:34</span><span>Here&#x27;s what you have to lose.</span></div>
+<div class="seg"><span class="ts">2:36</span><span>The pads, the worry, the fear, the medication and maybe even the surgery that you</span></div>
+<div class="seg"><span class="ts">2:40</span><span>thought you needed.</span></div>
+<div class="seg"><span class="ts">2:41</span><span>So if you&#x27;re still here and you&#x27;re still watching, I know that you want things to</span></div>
+<div class="seg"><span class="ts">2:45</span><span>change and that you are very motivated.</span></div>
+<div class="seg"><span class="ts">2:48</span><span>You must have been suffering for a really long time and I want you to know that I&#x27;m</span></div>
+<div class="seg"><span class="ts">2:51</span><span>here for you.</span></div>
+<div class="seg"><span class="ts">2:52</span><span>I&#x27;ve done all the research and the trial and error for you.</span></div>
+<div class="seg"><span class="ts">2:56</span><span>I know what works and I&#x27;ve created this method for you.</span></div>
+<div class="seg"><span class="ts">2:59</span><span>So come join the Buffmuff method and let&#x27;s add you to the list of successes.</span></div></div></details>
+  <details><summary>▶ Upsell 1 video — New Member Welcome · 8:44 · membership pitch</summary><div class="inner"><div class="seg"><span class="ts">0:00</span><span>Thank you so much for joining the Buffmuff community and for prioritizing yourself.</span></div>
+<div class="seg"><span class="ts">0:04</span><span>Before you jump into the program, I want to share a few very important things with you,</span></div>
+<div class="seg"><span class="ts">0:07</span><span>so be sure to watch this entire video. The first thing I want you to know is that starting</span></div>
+<div class="seg"><span class="ts">0:12</span><span>right now, your journey into pelvic health is about to shift. Your search for solutions can end</span></div>
+<div class="seg"><span class="ts">0:17</span><span>because you found them. The symptoms you&#x27;ve been suffering with can be reversed with this program.</span></div>
+<div class="seg"><span class="ts">0:24</span><span>And in three weeks from now, you can expect to feel quite different in your body.</span></div>
+<div class="seg"><span class="ts">0:29</span><span>You can expect to feel freedom, confidence, strength, and peace. And I say peace because,</span></div>
+<div class="seg"><span class="ts">0:36</span><span>as you know, dealing with a pelvic floor dysfunction is anything but peaceful.</span></div>
+<div class="seg"><span class="ts">0:40</span><span>When there&#x27;s a problem with our pelvic muscles and organs, it affects our whole body and our</span></div>
+<div class="seg"><span class="ts">0:44</span><span>whole life. It creates anxiety, it limits us from doing the things we used to love, it stops us from</span></div>
+<div class="seg"><span class="ts">0:50</span><span>exercising, it can take our hope away, and it makes us feel old way, way, way before we should.</span></div>
+<div class="seg"><span class="ts">0:56</span><span>I know this because I&#x27;ve been there too. I&#x27;ve experienced incontinence and pelvic organ prolapse,</span></div>
+<div class="seg"><span class="ts">1:01</span><span>and I know firsthand the toll it can take on our entire life. But as of right now,</span></div>
+<div class="seg"><span class="ts">1:06</span><span>everything for you is going to change, and I know this because I&#x27;ve reversed my incontinence and</span></div>
+<div class="seg"><span class="ts">1:10</span><span>uterine prolapse completely naturally, and I&#x27;ve helped thousands of others do the same. I last,</span></div>
+<div class="seg"><span class="ts">1:16</span><span>sneeze, lift weights, run, do yoga, and other activities all without the fear of leaking or</span></div>
+<div class="seg"><span class="ts">1:21</span><span>bulges, and I&#x27;m able to enjoy exercise and feel strong in my body. So can you. It doesn&#x27;t matter</span></div>
+<div class="seg"><span class="ts">1:27</span><span>if you&#x27;ve suffered for two months or two decades. This program has worked for people at all ages</span></div>
+<div class="seg"><span class="ts">1:32</span><span>and stages and with varied health histories as well. People who have incontinence, prolapse,</span></div>
+<div class="seg"><span class="ts">1:37</span><span>painful sex, those who&#x27;ve had a pelvic surgery and now have symptoms again, people who&#x27;ve had a</span></div>
+<div class="seg"><span class="ts">1:41</span><span>hysterectomy, and even people with none of the above who want to prevent all of the above.</span></div>
+<div class="seg"><span class="ts">1:47</span><span>After having thousands of women go through this program and speaking with the ones who</span></div>
+<div class="seg"><span class="ts">1:51</span><span>weren&#x27;t seeing results, I noticed a few things. The exercises were clear and short and simple to</span></div>
+<div class="seg"><span class="ts">1:56</span><span>follow, and the participants all knew exactly what to do, but they weren&#x27;t doing it. So I asked</span></div>
+<div class="seg"><span class="ts">2:01</span><span>myself, why? Why is it that people who had all the tools they needed, tools that have worked for</span></div>
+<div class="seg"><span class="ts">2:06</span><span>thousands of others, choosing not to use them? I sent an email out to all of my participants,</span></div>
+<div class="seg"><span class="ts">2:11</span><span>and I surveyed them. And when I started to read the results, my heart broke a little bit,</span></div>
+<div class="seg"><span class="ts">2:16</span><span>but looking back, it made a lot of sense. There were four main reasons people didn&#x27;t implement</span></div>
+<div class="seg"><span class="ts">2:22</span><span>this program. Number one, there was a lack of motivation. Number two, there was a lack of belief.</span></div>
+<div class="seg"><span class="ts">2:29</span><span>Number three, there was a lack of commitment. And number four, there was a lack of community.</span></div>
+<div class="seg"><span class="ts">2:34</span><span>Honestly, when I explored it a little more with these people, they seemed downright deflated</span></div>
+<div class="seg"><span class="ts">2:39</span><span>because they had tried everything so far. So why would this program be any different?</span></div>
+<div class="seg"><span class="ts">2:44</span><span>They&#x27;ve suffered for so long. And so their belief in the program wasn&#x27;t there, even if they saw</span></div>
+<div class="seg"><span class="ts">2:49</span><span>others succeed. And because of that deflation, they weren&#x27;t taking action. And therefore,</span></div>
+<div class="seg"><span class="ts">2:53</span><span>they weren&#x27;t seeing the results. And that didn&#x27;t feel good to me. So this is when I decided I would</span></div>
+<div class="seg"><span class="ts">2:58</span><span>create something just for them. For people who want to make sure they stay motivated and stay</span></div>
+<div class="seg"><span class="ts">3:03</span><span>committed for people who really want to cover all their bases, I created my Buffmuff membership.</span></div>
+<div class="seg"><span class="ts">3:10</span><span>Inside my membership, I&#x27;ve taken the Buffmuff method and brought it into a series of fun and easy</span></div>
+<div class="seg"><span class="ts">3:15</span><span>to follow programs that have helped women stay motivated, excited, and engaged. And since doing</span></div>
+<div class="seg"><span class="ts">3:20</span><span>this, I&#x27;ve noticed that those who joined the membership end up getting results a lot faster,</span></div>
+<div class="seg"><span class="ts">3:25</span><span>they procrastinate less, and they stay engaged for longer. And therefore, they keep their symptoms</span></div>
+<div class="seg"><span class="ts">3:30</span><span>at bay. Consistency is key in everything and Peltic Health is no different. And I can tell you all</span></div>
+<div class="seg"><span class="ts">3:35</span><span>the secrets, but you need to implement them and stay consistent. Because those who joined the</span></div>
+<div class="seg"><span class="ts">3:39</span><span>membership were more motivated and committed, they got quicker and longer lasting results. And their</span></div>
+<div class="seg"><span class="ts">3:44</span><span>results permeated into other areas of their lives as well. They started lifting weights, heavier</span></div>
+<div class="seg"><span class="ts">3:50</span><span>weights, and they started doing more challenging workouts. And they started to feel athletic,</span></div>
+<div class="seg"><span class="ts">3:55</span><span>especially in their 50s and 60s, which is really cool. And especially as we age, we need to lift</span></div>
+<div class="seg"><span class="ts">4:01</span><span>weights and do high intensity workouts for our brains, our hearts, and our bones. So how is the</span></div>
+<div class="seg"><span class="ts">4:06</span><span>membership different from the method? The method lays the foundation and gives you the basics. The</span></div>
+<div class="seg"><span class="ts">4:12</span><span>membership expands the variety and gives you a truly whole body approach, including the 28 day</span></div>
+<div class="seg"><span class="ts">4:17</span><span>challenge, which we do at the beginning of every month as a community, you get a daily 10 minute</span></div>
+<div class="seg"><span class="ts">4:22</span><span>workout that gets harder over the 28 days, which means you and your pelvic floor get stronger.</span></div>
+<div class="seg"><span class="ts">4:27</span><span>There&#x27;s a wider variety of exercises to keep it new fun and exciting and the community chat and</span></div>
+<div class="seg"><span class="ts">4:31</span><span>group coaching calls keep everyone accountable and on track. In addition to the challenge, I also</span></div>
+<div class="seg"><span class="ts">4:37</span><span>created over 75 different follow along workouts that are pelvic health based, but also categorized</span></div>
+<div class="seg"><span class="ts">4:42</span><span>into strength training, high intensity intervals, yoga and other workouts to help give you a full</span></div>
+<div class="seg"><span class="ts">4:47</span><span>body approach, kind of like killing tubers with one stone. With the workout library, you can buff</span></div>
+<div class="seg"><span class="ts">4:52</span><span>your muff while also toning your legs or arms or improving your cardio or even relaxing and</span></div>
+<div class="seg"><span class="ts">4:57</span><span>unwinding at the end of a stressful week with the yoga options, all on your own time in your own home.</span></div>
+<div class="seg"><span class="ts">5:03</span><span>I also created 14 in depth meal plans to help with things that get in the way of optimal health</span></div>
+<div class="seg"><span class="ts">5:08</span><span>and pelvic health like hormones, energy, constipation, blood sugar management, and more. I also host</span></div>
+<div class="seg"><span class="ts">5:14</span><span>two group calls every week on zoom where you can hop on and ask questions or just listen and learn</span></div>
+<div class="seg"><span class="ts">5:19</span><span>from others in the community. In my membership, there&#x27;s also a community chat area in the app where</span></div>
+<div class="seg"><span class="ts">5:24</span><span>you can ask questions and share your wins. And I have to say this has been so powerful for my</span></div>
+<div class="seg"><span class="ts">5:29</span><span>participants. When people lose motivation, it&#x27;s the community that re inspires them. And when people</span></div>
+<div class="seg"><span class="ts">5:34</span><span>share their wins in the community, it helps others stay motivated and continuing to progress in their</span></div>
+<div class="seg"><span class="ts">5:39</span><span>fitness. The membership also includes my vagina village, which is a series of interviews I&#x27;ve</span></div>
+<div class="seg"><span class="ts">5:44</span><span>done with pelvic health experts, doctors, physios, and more. And since introducing the membership,</span></div>
+<div class="seg"><span class="ts">5:50</span><span>the response has been phenomenal. It&#x27;s taken my program from a clear, concise, easy to follow system</span></div>
+<div class="seg"><span class="ts">5:55</span><span>into a full pelvic floor fitness gym in your pocket, along with a nutritionist and a group of friends</span></div>
+<div class="seg"><span class="ts">6:00</span><span>who can all talk about their vaginas in an open way. Oh, and a height person, that&#x27;s me, to keep</span></div>
+<div class="seg"><span class="ts">6:06</span><span>you going when you get discouraged. So with all of that said, I want to invite you to join me in</span></div>
+<div class="seg"><span class="ts">6:10</span><span>the membership and I have a special offer for you. This is a one time offer only available on the day</span></div>
+<div class="seg"><span class="ts">6:16</span><span>you join it only available on this page. It&#x27;s not available anywhere else. And I do this because</span></div>
+<div class="seg"><span class="ts">6:21</span><span>making the commitment at the start and not just dipping your toe in the water leads you to putting</span></div>
+<div class="seg"><span class="ts">6:26</span><span>in more effort up front and getting better results and staying symptom free for the long term.</span></div>
+<div class="seg"><span class="ts">6:31</span><span>This membership offer is like a rite of passage to improve health and confidence and freedom</span></div>
+<div class="seg"><span class="ts">6:36</span><span>and peace. So what&#x27;s the offer for new students who sign up today, I&#x27;m offering my yearly membership</span></div>
+<div class="seg"><span class="ts">6:42</span><span>at 55% off. It&#x27;s normally 27 bucks a month or $324 per year. But if you join today, you can get it</span></div>
+<div class="seg"><span class="ts">6:50</span><span>for $147 per year, which is equivalent to $12 and 25 cents a month. Again, this is only available</span></div>
+<div class="seg"><span class="ts">6:57</span><span>today and only available on this page. So the choice is yours. Do you want to go out in and commit</span></div>
+<div class="seg"><span class="ts">7:03</span><span>to my program? Or do you want to just dip your toe in? And just to take off all the risk, I&#x27;m</span></div>
+<div class="seg"><span class="ts">7:08</span><span>offering a 30 day refund policy. So if you join the membership today and apply the exercises and</span></div>
+<div class="seg"><span class="ts">7:14</span><span>even join the challenge and you don&#x27;t think it&#x27;s well worth the $12.25 per month, then just send me</span></div>
+<div class="seg"><span class="ts">7:19</span><span>a quick email and I&#x27;ll issue you an entire refund. No questions asked. If you request a refund, I&#x27;ll</span></div>
+<div class="seg"><span class="ts">7:25</span><span>likely also offer you some assistance and some guidance on what to try next as well because</span></div>
+<div class="seg"><span class="ts">7:29</span><span>more than anything, I want to see you succeed and be symptom free. I want to see you free from</span></div>
+<div class="seg"><span class="ts">7:35</span><span>suffering. So if this sounds like something you&#x27;re ready to do, just click the button below the video</span></div>
+<div class="seg"><span class="ts">7:40</span><span>and my membership will be automatically added to your order. And if this offer isn&#x27;t right for you</span></div>
+<div class="seg"><span class="ts">7:45</span><span>just yet, that&#x27;s totally okay. I have many women who&#x27;ve joined at a later date and paid full price</span></div>
+<div class="seg"><span class="ts">7:50</span><span>and still tell me it&#x27;s a bargain. So that&#x27;s the offer, 147 bucks per year, the equivalent of</span></div>
+<div class="seg"><span class="ts">7:56</span><span>$12.25 per month. And I&#x27;m not asking you to say yes right now. I&#x27;m asking you to say maybe,</span></div>
+<div class="seg"><span class="ts">8:03</span><span>maybe the buff my membership really does work. And if so, maybe you&#x27;ll be able to completely</span></div>
+<div class="seg"><span class="ts">8:10</span><span>reverse your public floor challenges. Maybe you&#x27;ll start to feel confident in your own body again.</span></div>
+<div class="seg"><span class="ts">8:16</span><span>And maybe you&#x27;ll start exercising more and improving your whole body health. And maybe this</span></div>
+<div class="seg"><span class="ts">8:22</span><span>will help you feel less stressed and stronger and more empowered. So if you&#x27;re ready to say maybe</span></div>
+<div class="seg"><span class="ts">8:28</span><span>and try the membership, just click the button below and join me and thousands of other women who are</span></div>
+<div class="seg"><span class="ts">8:33</span><span>committed to staying out of depends and moving freely and enjoying sex and feeling unstoppable</span></div>
+<div class="seg"><span class="ts">8:39</span><span>for life. Either way, I sincerely look forward to supporting you on your journey.</span></div></div></details>
+  <details><summary>▶ Upsell 2 video A — Final Step · 6:06 · supplement pitch (short variant)</summary><div class="inner"><div class="seg"><span class="ts">0:00</span><span>Thank you so much for joining me and welcome.</span></div>
+<div class="seg"><span class="ts">0:02</span><span>I&#x27;m so happy that you said yes to the Buffmuff Method.</span></div>
+<div class="seg"><span class="ts">0:05</span><span>You&#x27;ve just taken an important step for your pelvic health.</span></div>
+<div class="seg"><span class="ts">0:08</span><span>And before you go into the program, I want to share one more thing with you.</span></div>
+<div class="seg"><span class="ts">0:12</span><span>Now, first, I want to be really clear.</span></div>
+<div class="seg"><span class="ts">0:14</span><span>The Buffmuff Method is the foundation.</span></div>
+<div class="seg"><span class="ts">0:16</span><span>It gives you the exercises, the education, several workouts,</span></div>
+<div class="seg"><span class="ts">0:20</span><span>the lifestyle tips, the step-by-step guidance,</span></div>
+<div class="seg"><span class="ts">0:23</span><span>and the plan you need to start improving your pelvic health naturally.</span></div>
+<div class="seg"><span class="ts">0:27</span><span>So you&#x27;re absolutely in the right place, and what you just bought has helped thousands.</span></div>
+<div class="seg"><span class="ts">0:32</span><span>But over the years, one thing that I&#x27;ve seen happen again and again and again is that sometimes</span></div>
+<div class="seg"><span class="ts">0:38</span><span>women are doing the right exercises, they&#x27;re learning the right things,</span></div>
+<div class="seg"><span class="ts">0:41</span><span>they&#x27;re finally understanding their body,</span></div>
+<div class="seg"><span class="ts">0:43</span><span>and they&#x27;re still not quite getting as much out of it as they could.</span></div>
+<div class="seg"><span class="ts">0:47</span><span>Not because the exercises aren&#x27;t working, not because their body is broken,</span></div>
+<div class="seg"><span class="ts">0:50</span><span>but because their body needs a little more support from within while they are rebuilding strength.</span></div>
+<div class="seg"><span class="ts">0:56</span><span>And this becomes especially important as we get older.</span></div>
+<div class="seg"><span class="ts">0:59</span><span>After the age of 30, we naturally start losing muscle mass,</span></div>
+<div class="seg"><span class="ts">1:03</span><span>somewhere between 3 and 8% every decade.</span></div>
+<div class="seg"><span class="ts">1:06</span><span>And it accelerates as we move through our 40s, 50s, and beyond.</span></div>
+<div class="seg"><span class="ts">1:09</span><span>We also lose more type 2 muscle fibers,</span></div>
+<div class="seg"><span class="ts">1:12</span><span>which are the ones that help our muscles react quickly,</span></div>
+<div class="seg"><span class="ts">1:15</span><span>the ones we need when we cough, sneeze, laugh,</span></div>
+<div class="seg"><span class="ts">1:18</span><span>and lift something or move suddenly.</span></div>
+<div class="seg"><span class="ts">1:19</span><span>And yes, this muscle loss includes the pelvic floor too,</span></div>
+<div class="seg"><span class="ts">1:23</span><span>because your pelvic floor is skeletal muscle.</span></div>
+<div class="seg"><span class="ts">1:26</span><span>It is the foundation of your core and it works as part of a whole body system.</span></div>
+<div class="seg"><span class="ts">1:30</span><span>So it&#x27;s not just about getting weaker over time, it&#x27;s about getting slower.</span></div>
+<div class="seg"><span class="ts">1:34</span><span>And a pelvic floor that can&#x27;t react fast enough is one that leaks,</span></div>
+<div class="seg"><span class="ts">1:38</span><span>even when the muscles are technically strong.</span></div>
+<div class="seg"><span class="ts">1:40</span><span>This is why some women do everything right and still feel like something is holding them back.</span></div>
+<div class="seg"><span class="ts">1:45</span><span>The consistent training is there, the intention is there,</span></div>
+<div class="seg"><span class="ts">1:49</span><span>but the muscles don&#x27;t have what they need to fully respond and rebuild.</span></div>
+<div class="seg"><span class="ts">1:53</span><span>So when you&#x27;re doing the buffmuff exercises and you&#x27;re learning how to activate properly,</span></div>
+<div class="seg"><span class="ts">1:57</span><span>breathe properly, coordinate properly,</span></div>
+<div class="seg"><span class="ts">2:00</span><span>that&#x27;s amazing and it&#x27;s the most important first step,</span></div>
+<div class="seg"><span class="ts">2:02</span><span>which you will learn in the method.</span></div>
+<div class="seg"><span class="ts">2:04</span><span>But I also want your body to have the substrate it needs to get stronger,</span></div>
+<div class="seg"><span class="ts">2:08</span><span>recover, and respond as well as it can.</span></div>
+<div class="seg"><span class="ts">2:10</span><span>That&#x27;s why I created Buff Plus.</span></div>
+<div class="seg"><span class="ts">2:12</span><span>It&#x27;s my daily supplement designed to support your pelvic floor</span></div>
+<div class="seg"><span class="ts">2:15</span><span>and whole body from the inside while you&#x27;re doing the buffmuff method.</span></div>
+<div class="seg"><span class="ts">2:19</span><span>So this is not here to replace the exercises,</span></div>
+<div class="seg"><span class="ts">2:22</span><span>it&#x27;s here to support the exercises.</span></div>
+<div class="seg"><span class="ts">2:24</span><span>It&#x27;s here to compliment the work you&#x27;re already doing.</span></div>
+<div class="seg"><span class="ts">2:27</span><span>It&#x27;s here to help you get more out of the consistency you&#x27;re creating.</span></div>
+<div class="seg"><span class="ts">2:31</span><span>Because that&#x27;s what we want, right?</span></div>
+<div class="seg"><span class="ts">2:32</span><span>We don&#x27;t just want to be doing the right things,</span></div>
+<div class="seg"><span class="ts">2:35</span><span>we want our body to respond to those right things.</span></div>
+<div class="seg"><span class="ts">2:38</span><span>We want to feel stronger, we want to recover better,</span></div>
+<div class="seg"><span class="ts">2:41</span><span>we want to feel like our efforts are actually going somewhere.</span></div>
+<div class="seg"><span class="ts">2:45</span><span>And for a lot of women, especially as we age,</span></div>
+<div class="seg"><span class="ts">2:47</span><span>that inside support really does matter.</span></div>
+<div class="seg"><span class="ts">2:50</span><span>Now, when I created Buff Plus, I wanted it to be simple.</span></div>
+<div class="seg"><span class="ts">2:53</span><span>I did not want another generic supplement.</span></div>
+<div class="seg"><span class="ts">2:55</span><span>I didn&#x27;t want something trendy.</span></div>
+<div class="seg"><span class="ts">2:57</span><span>I didn&#x27;t want a formula that had nothing to do with women&#x27;s actual needs as they age.</span></div>
+<div class="seg"><span class="ts">3:01</span><span>And I definitely didn&#x27;t want women taking a million different things</span></div>
+<div class="seg"><span class="ts">3:05</span><span>and trying to piece it all together themselves.</span></div>
+<div class="seg"><span class="ts">3:07</span><span>Because who wants that?</span></div>
+<div class="seg"><span class="ts">3:08</span><span>I wanted something simple, purposeful, effective, and relevant.</span></div>
+<div class="seg"><span class="ts">3:12</span><span>So Buff Plus contains three powerhouse ingredients that I chose very intentionally.</span></div>
+<div class="seg"><span class="ts">3:17</span><span>The first is creatine monohydrate.</span></div>
+<div class="seg"><span class="ts">3:19</span><span>Creatine is one of the most researched supplements out there,</span></div>
+<div class="seg"><span class="ts">3:22</span><span>including research on women.</span></div>
+<div class="seg"><span class="ts">3:24</span><span>And it supports muscle energy, muscle strength, and muscle recovery.</span></div>
+<div class="seg"><span class="ts">3:28</span><span>That matters because when you&#x27;re doing the BuffMuff exercises,</span></div>
+<div class="seg"><span class="ts">3:31</span><span>you want your muscles to actually have the energy and the support they need</span></div>
+<div class="seg"><span class="ts">3:35</span><span>to respond to the training.</span></div>
+<div class="seg"><span class="ts">3:37</span><span>Creatine helps create that environment.</span></div>
+<div class="seg"><span class="ts">3:39</span><span>So the work you&#x27;re putting in is doing what you want.</span></div>
+<div class="seg"><span class="ts">3:42</span><span>The second ingredient is peptostrong.</span></div>
+<div class="seg"><span class="ts">3:44</span><span>This is a patented plant peptide.</span></div>
+<div class="seg"><span class="ts">3:46</span><span>Peptides are short chains of amino acid that help support muscle recovery</span></div>
+<div class="seg"><span class="ts">3:50</span><span>and helps fight age-related muscle loss.</span></div>
+<div class="seg"><span class="ts">3:52</span><span>And remember those type 2 muscle fibers we talked about?</span></div>
+<div class="seg"><span class="ts">3:55</span><span>The fast twitch ones your pelvic floor needs to be able to react quickly?</span></div>
+<div class="seg"><span class="ts">3:59</span><span>Peptostrong has been studied for its ability to support muscle recovery</span></div>
+<div class="seg"><span class="ts">4:02</span><span>and help slow that age-related loss.</span></div>
+<div class="seg"><span class="ts">4:05</span><span>For any woman over 35 doing this work,</span></div>
+<div class="seg"><span class="ts">4:07</span><span>it&#x27;s a really meaningful way to support your body alongside the training.</span></div>
+<div class="seg"><span class="ts">4:11</span><span>And then the third is folic acid,</span></div>
+<div class="seg"><span class="ts">4:13</span><span>which contains trace minerals and helps support hydration and nutrient delivery.</span></div>
+<div class="seg"><span class="ts">4:17</span><span>So the creatine and peptostrong you&#x27;re taking actually get where they need to go.</span></div>
+<div class="seg"><span class="ts">4:22</span><span>Your body can absorb and use them rather than just passing them through.</span></div>
+<div class="seg"><span class="ts">4:25</span><span>So again, we&#x27;re not just throwing things into a formula because they sound good.</span></div>
+<div class="seg"><span class="ts">4:30</span><span>Everything is there for a reason.</span></div>
+<div class="seg"><span class="ts">4:32</span><span>Everything is there because I want your body to be supported while you&#x27;re doing the work.</span></div>
+<div class="seg"><span class="ts">4:37</span><span>So what does that mean for you?</span></div>
+<div class="seg"><span class="ts">4:38</span><span>It means better support for strength, better support for recovery,</span></div>
+<div class="seg"><span class="ts">4:43</span><span>better support for staying consistent, and better support for your body</span></div>
+<div class="seg"><span class="ts">4:47</span><span>as you work through the BuffMuff method.</span></div>
+<div class="seg"><span class="ts">4:49</span><span>And I love this because the BuffMuff method gives you the plan.</span></div>
+<div class="seg"><span class="ts">4:52</span><span>It shows you what to do.</span></div>
+<div class="seg"><span class="ts">4:54</span><span>It teaches you how to do it.</span></div>
+<div class="seg"><span class="ts">4:55</span><span>It helps you build that foundation.</span></div>
+<div class="seg"><span class="ts">4:57</span><span>And BuffPlus supports the body that is carrying out that plan.</span></div>
+<div class="seg"><span class="ts">5:00</span><span>That is the role of BuffPlus.</span></div>
+<div class="seg"><span class="ts">5:02</span><span>So if you want to add another layer of support,</span></div>
+<div class="seg"><span class="ts">5:04</span><span>if you want to support your muscles and your recovery from the inside,</span></div>
+<div class="seg"><span class="ts">5:08</span><span>if you want to do this in a way that feels more complete,</span></div>
+<div class="seg"><span class="ts">5:11</span><span>more supportive, and more intentional, that is exactly why BuffPlus is here.</span></div>
+<div class="seg"><span class="ts">5:16</span><span>And just on this page, I have a special gift for you.</span></div>
+<div class="seg"><span class="ts">5:18</span><span>You can claim 40% off your first bundle today,</span></div>
+<div class="seg"><span class="ts">5:22</span><span>and you can try BuffPlus risk-free with our 60-day satisfaction guarantee.</span></div>
+<div class="seg"><span class="ts">5:26</span><span>Your satisfaction is our number one priority.</span></div>
+<div class="seg"><span class="ts">5:29</span><span>So if you are not satisfied after trying it,</span></div>
+<div class="seg"><span class="ts">5:31</span><span>simply reach out to our amazing customer care team,</span></div>
+<div class="seg"><span class="ts">5:34</span><span>and we will make things right.</span></div>
+<div class="seg"><span class="ts">5:35</span><span>Now all you have to do is choose how many pouches you&#x27;d like</span></div>
+<div class="seg"><span class="ts">5:38</span><span>by selecting one of the options below.</span></div>
+<div class="seg"><span class="ts">5:40</span><span>And when you combine BuffPlus with your BuffMuff exercises,</span></div>
+<div class="seg"><span class="ts">5:45</span><span>you&#x27;re supporting your body from both directions,</span></div>
+<div class="seg"><span class="ts">5:47</span><span>with the right movement and with the right daily support from within.</span></div>
+<div class="seg"><span class="ts">5:52</span><span>And that combination can be incredibly powerful.</span></div>
+<div class="seg"><span class="ts">5:56</span><span>I&#x27;m so excited for you.</span></div>
+<div class="seg"><span class="ts">5:57</span><span>You&#x27;ve already made a beautiful decision for your pelvic health today,</span></div>
+<div class="seg"><span class="ts">6:01</span><span>and BuffPlus is such a simple, smart way to support that decision even more.</span></div></div></details>
+  <details><summary>▶ Upsell 2 video B — Final Step · 13:53 · supplement pitch (long variant, on-page)</summary><div class="inner"><div class="seg"><span class="ts">0:00</span><span>Congratulations on getting Bachmach Method. It should be in your inbox in the next five minutes.</span></div>
+<div class="seg"><span class="ts">0:05</span><span>But before you access it, I have one more thing that I want you to check out.</span></div>
+<div class="seg"><span class="ts">0:09</span><span>One last video and then you&#x27;re on your way to the members area.</span></div>
+<div class="seg"><span class="ts">0:13</span><span>This is the last step that you need to complete in order to eliminate the leaks and pressure from prolapse faster.</span></div>
+<div class="seg"><span class="ts">0:19</span><span>And I saved the best for last.</span></div>
+<div class="seg"><span class="ts">0:21</span><span>I give you all of the daily follow along 10 minute pelvic floor exercise routines.</span></div>
+<div class="seg"><span class="ts">0:25</span><span>I show you how you can start reversing incontinence and prolapse symptoms and reclaim control, independence and freedom to do the things that you love again.</span></div>
+<div class="seg"><span class="ts">0:35</span><span>I show you how everything works step by step so that you never have to think about what exercises to do each day, how many sets of reps you need to do and wonder if it&#x27;s even going to work.</span></div>
+<div class="seg"><span class="ts">0:45</span><span>On the previous page, I gave you a chance to join my Muff Plus membership so that you can keep your symptoms away for years with live ongoing member support that has helped over 10,000 women.</span></div>
+<div class="seg"><span class="ts">0:58</span><span>And now I&#x27;m going to help you get rid of your symptoms faster by giving your body support from within.</span></div>
+<div class="seg"><span class="ts">1:03</span><span>You see, when I started on my pelvic floor journey, one of the most surprising things that I learned was that we need more than Kegels.</span></div>
+<div class="seg"><span class="ts">1:10</span><span>That Kegels work better with whole body resistance training and that exercise helps deliver nutrients to the muscles when the right nutrients are in circulation.</span></div>
+<div class="seg"><span class="ts">1:18</span><span>And as you&#x27;ll soon discover, it&#x27;s about more than exercise.</span></div>
+<div class="seg"><span class="ts">1:23</span><span>There are other hidden factors that are important to address as well.</span></div>
+<div class="seg"><span class="ts">1:27</span><span>And if we don&#x27;t fix these hidden factors, our exercises won&#x27;t be as effective.</span></div>
+<div class="seg"><span class="ts">1:31</span><span>I wish our doctors and care providers told us this, but they&#x27;re just not trained in pelvic floor fitness or lifestyle remedies.</span></div>
+<div class="seg"><span class="ts">1:38</span><span>So they don&#x27;t really know the nitty gritty.</span></div>
+<div class="seg"><span class="ts">1:40</span><span>So I rolled up my sleeves and I did my own research.</span></div>
+<div class="seg"><span class="ts">1:43</span><span>I spent countless hours reading scientific papers, talking to specialists and learning about how to heal my body holistically.</span></div>
+<div class="seg"><span class="ts">1:50</span><span>And when I learned all this, everything changed for me.</span></div>
+<div class="seg"><span class="ts">1:53</span><span>It was also a little heartbreaking because no one is teaching us about this.</span></div>
+<div class="seg"><span class="ts">1:57</span><span>And so as part of my mission to help myself and thousands of women around the world, I decided I would find a way to address these hidden challenges that we face</span></div>
+<div class="seg"><span class="ts">2:06</span><span>and figure out how we can solve them once and for all so we can keep the leaks and prolapse symptoms away for good.</span></div>
+<div class="seg"><span class="ts">2:14</span><span>I discovered that the best way to speed up your pelvic floor healing is by fixing the three hidden blocks to pelvic floor recovery.</span></div>
+<div class="seg"><span class="ts">2:21</span><span>Now, I know you&#x27;re serious about restoring your pelvic health and you are committing to do the buffmuff exercises religiously.</span></div>
+<div class="seg"><span class="ts">2:28</span><span>But I want to let you know about three hidden things that can get in the way of your accelerated pelvic floor recovery.</span></div>
+<div class="seg"><span class="ts">2:35</span><span>Hidden block number one is women who are struggling with constipation may unknowingly be working against their progress.</span></div>
+<div class="seg"><span class="ts">2:43</span><span>I discovered that it doesn&#x27;t matter how much pelvic floor exercise you do if you&#x27;re not having full, complete bowel movements every single day.</span></div>
+<div class="seg"><span class="ts">2:51</span><span>When you&#x27;re constipated, you&#x27;re putting excess strain on your pelvic floor and you will experience more urinary urgency and frequency.</span></div>
+<div class="seg"><span class="ts">3:01</span><span>Constipation is a major contributor to pelvic floor dysfunction and one of the top hidden causes of pelvic floor problems.</span></div>
+<div class="seg"><span class="ts">3:09</span><span>Because if your digestive system is backed up, your pelvic floor is under constant pressure and your overall health will suffer as well.</span></div>
+<div class="seg"><span class="ts">3:18</span><span>And no matter how consistent you are with your workouts, ongoing constipation can make prolapse worse, increase leaks and slow down pelvic floor recovery.</span></div>
+<div class="seg"><span class="ts">3:27</span><span>Hidden block number two is women over 30 experience leaks more often because of weaker pelvic floor muscles due to age related muscle loss.</span></div>
+<div class="seg"><span class="ts">3:37</span><span>This is not just because of childbirth or hormones.</span></div>
+<div class="seg"><span class="ts">3:41</span><span>As we age, we naturally lose between 3 and 8% of our muscle mass every decade after age 30.</span></div>
+<div class="seg"><span class="ts">3:47</span><span>And by the time we reach our 60s, that loss accelerates even more rapidly.</span></div>
+<div class="seg"><span class="ts">3:52</span><span>We also lose more type two muscle fibers, the ones that help our muscles react quickly, such as when we cough or sneeze.</span></div>
+<div class="seg"><span class="ts">3:59</span><span>This includes our pelvic floor muscles as well and this muscle loss and type two muscle fiber loss is a major reason why incontinence and prolapse increase with age.</span></div>
+<div class="seg"><span class="ts">4:10</span><span>This leads us to start mapping out bathroom locations, turning down social invites and fear of something embarrassing happening,</span></div>
+<div class="seg"><span class="ts">4:17</span><span>waking up multiple times a night to pee and quitting the things that we love doing, whether it&#x27;s exercising or traveling or lifting our kids or grandkids.</span></div>
+<div class="seg"><span class="ts">4:27</span><span>As these muscles weaken, so does our pelvic floor&#x27;s ability to react quickly enough and hold everything in.</span></div>
+<div class="seg"><span class="ts">4:34</span><span>This leads to incontinence, both urinary and fecal, and is in fact one of the leading reasons older women end up in nursing homes.</span></div>
+<div class="seg"><span class="ts">4:42</span><span>Muscle loss is also a major contributor to increased fall risk and when women are waking up multiple times a night to pee, the risk of falling increases.</span></div>
+<div class="seg"><span class="ts">4:51</span><span>Exercise is one way to help, but we also need to ensure we have the right nutrients on board to ensure that the muscles have the building blocks to get stronger from our exercise.</span></div>
+<div class="seg"><span class="ts">5:02</span><span>And the conversation doesn&#x27;t end with muscle loss either.</span></div>
+<div class="seg"><span class="ts">5:05</span><span>Hidden block number three is that women over the age of 45 naturally experience vaginal dryness, itchiness and atrophy because estrogen levels, hyaluronic acid and collagen levels drop.</span></div>
+<div class="seg"><span class="ts">5:17</span><span>We start to experience vaginal atrophy, which is a condition where the tissues in the vulva and the vagina become thinner and drier because of a lack of estrogen, collagen and moisture.</span></div>
+<div class="seg"><span class="ts">5:29</span><span>This causes issues like incontinence, prolapse, increased urinary urgency and frequency.</span></div>
+<div class="seg"><span class="ts">5:36</span><span>The vaginal walls lose elasticity and moisture.</span></div>
+<div class="seg"><span class="ts">5:39</span><span>There is reduced blood flow to the pelvic region and there&#x27;s an increased risk of vaginal infections and irritation.</span></div>
+<div class="seg"><span class="ts">5:46</span><span>Many have a feeling of tightness or shortening in the vaginal canal and discomfort during intimacy.</span></div>
+<div class="seg"><span class="ts">5:52</span><span>And the truth is pelvic floor exercise helps get what you consume into the muscles.</span></div>
+<div class="seg"><span class="ts">5:57</span><span>That&#x27;s why nutrition plays a big role in restoring our pelvic health from within.</span></div>
+<div class="seg"><span class="ts">6:02</span><span>And while I&#x27;m always an advocate for fueling our bodies with food first, research shows that nutritional value in our food has degraded by 5 to 40% since the 1950s.</span></div>
+<div class="seg"><span class="ts">6:13</span><span>And the nutrient content of our food has been steadily declining over the years.</span></div>
+<div class="seg"><span class="ts">6:17</span><span>A study published in the Journal of American College of Nutrition found that the average nutrient levels in fruits and vegetables has declined significantly.</span></div>
+<div class="seg"><span class="ts">6:28</span><span>That means we don&#x27;t get the same nutrients from our food today compared to our food decades ago.</span></div>
+<div class="seg"><span class="ts">6:33</span><span>And as someone who wants to stay active and independent well into my 90s, I went on a mission to find the best quality nutrients for my body and my pelvic floor.</span></div>
+<div class="seg"><span class="ts">6:43</span><span>When I was struggling with my recticeal, I would have good days and bad days.</span></div>
+<div class="seg"><span class="ts">6:47</span><span>Even though I was consistent with my pelvic floor exercises, some days I would be so symptomatic because I couldn&#x27;t get the poop out.</span></div>
+<div class="seg"><span class="ts">6:55</span><span>I wouldn&#x27;t even leave the house. I would avoid intimacy and there were days when I just didn&#x27;t even want to move at all.</span></div>
+<div class="seg"><span class="ts">7:01</span><span>But I aimed to do some form of exercise in the morning because it was usually the afternoons that were a bit unpredictable for me.</span></div>
+<div class="seg"><span class="ts">7:09</span><span>And that&#x27;s when I felt like I needed something more.</span></div>
+<div class="seg"><span class="ts">7:11</span><span>No matter how religiously I did my pelvic floor exercises, my body needed more.</span></div>
+<div class="seg"><span class="ts">7:17</span><span>And after trying so many things, it finally clicked. Exercise wasn&#x27;t enough because my body needed support from within.</span></div>
+<div class="seg"><span class="ts">7:24</span><span>It all started during my menopause transition, hormonal upheaval and a thyroid autoimmune condition.</span></div>
+<div class="seg"><span class="ts">7:31</span><span>I became constipated for the first time in my life while also dealing with a host of other crazy symptoms.</span></div>
+<div class="seg"><span class="ts">7:38</span><span>I now know we&#x27;re from perimenopause.</span></div>
+<div class="seg"><span class="ts">7:40</span><span>So I started consulting with naturopaths, functional medicine doctors. I did my own research.</span></div>
+<div class="seg"><span class="ts">7:45</span><span>And after much trial and error, I finally developed a diet and supplement regime that worked for me.</span></div>
+<div class="seg"><span class="ts">7:51</span><span>But there was just one more problem.</span></div>
+<div class="seg"><span class="ts">7:53</span><span>Giving my body the support it needed meant I had so many supplements I had to take each day.</span></div>
+<div class="seg"><span class="ts">7:59</span><span>And I would forget some sometimes or I would have a hard time getting them all down.</span></div>
+<div class="seg"><span class="ts">8:04</span><span>It became really hard to keep up with. I realized it was not sustainable.</span></div>
+<div class="seg"><span class="ts">8:08</span><span>That&#x27;s why my team and I created the first of its kind, all natural, effective and multi-purpose supplements</span></div>
+<div class="seg"><span class="ts">8:14</span><span>designed to accelerate pelvic floor recovery for women while also supporting whole body health.</span></div>
+<div class="seg"><span class="ts">8:19</span><span>I combined all of the most essential pelvic floor supplements into a few custom blends</span></div>
+<div class="seg"><span class="ts">8:25</span><span>so that I could know exactly where every ingredient came from.</span></div>
+<div class="seg"><span class="ts">8:29</span><span>So I could verify its quality and most importantly, so I could support myself from the inside out</span></div>
+<div class="seg"><span class="ts">8:35</span><span>and keep the symptoms away.</span></div>
+<div class="seg"><span class="ts">8:37</span><span>I did all this without taking 10 different pills a day.</span></div>
+<div class="seg"><span class="ts">8:40</span><span>And most importantly, I created something better than what was out there.</span></div>
+<div class="seg"><span class="ts">8:43</span><span>After diving deep into the supplement industry, I was shocked to learn that most supplements on the market</span></div>
+<div class="seg"><span class="ts">8:49</span><span>are generic or a one-size-fits-all solution that ignores women&#x27;s unique hormonal and pelvic health needs.</span></div>
+<div class="seg"><span class="ts">8:56</span><span>Many contain fillers, synthetic ingredients, or ineffective doses that don&#x27;t give your body what it truly needs to heal.</span></div>
+<div class="seg"><span class="ts">9:03</span><span>Many are not designed to work synergistically with pelvic floor exercise or address the real root causes</span></div>
+<div class="seg"><span class="ts">9:09</span><span>like inflammation, tissue repair, gut health, and hormone shifts.</span></div>
+<div class="seg"><span class="ts">9:13</span><span>And worst of all, a lot of even the most premium brands on the shelf are really just remakes of other formulas.</span></div>
+<div class="seg"><span class="ts">9:20</span><span>And most of their manufacturers don&#x27;t even know what&#x27;s inside their supplements.</span></div>
+<div class="seg"><span class="ts">9:25</span><span>When my community began taking the supplement bundle that I had created, there were so many powerful wins that they shared.</span></div>
+<div class="seg"><span class="ts">9:32</span><span>Women who had tried every fiber supplement and remedy for constipation were finally pooping regularly again.</span></div>
+<div class="seg"><span class="ts">9:38</span><span>Women who had been struggling with discomfort with intimacy and with daily activities were feeling more supple, less itchy,</span></div>
+<div class="seg"><span class="ts">9:45</span><span>and experienced a noticeable reduction in irritation.</span></div>
+<div class="seg"><span class="ts">9:48</span><span>Women were feeling stronger and more in control.</span></div>
+<div class="seg"><span class="ts">9:51</span><span>Many noticed they were covered better from exercise, they could do more, and they had more definition in their muscles too.</span></div>
+<div class="seg"><span class="ts">9:59</span><span>Women were speeding up the results and regaining control, taking back their freedom and keeping their symptoms away.</span></div>
+<div class="seg"><span class="ts">10:06</span><span>I originally launched my science-backed all-natural effective supplements to my community alone one year ago,</span></div>
+<div class="seg"><span class="ts">10:12</span><span>and after seeing their wins, I am now making them available to everyone.</span></div>
+<div class="seg"><span class="ts">10:17</span><span>They are designed to accelerate pelvic floor recovery, support, hormone balance, improve digestion, and help you feel confident in your body again.</span></div>
+<div class="seg"><span class="ts">10:26</span><span>Our team of experts ensure every ingredient is 100% safe and all-natural, high-quality and bioavailable that your body actually can use it,</span></div>
+<div class="seg"><span class="ts">10:35</span><span>made with ingredients that you can pronounce, no weird fillers or artificial junk,</span></div>
+<div class="seg"><span class="ts">10:40</span><span>their third party tested for purity, safety, and effectiveness, they&#x27;re made in FDA-registered GMP certified facilities in the USA.</span></div>
+<div class="seg"><span class="ts">10:49</span><span>These are the exact supplements that I take every single day and the only ones that I recommend to my family, friends, and the women in my community.</span></div>
+<div class="seg"><span class="ts">10:57</span><span>And now, for a limited time, you can try them for 40% off.</span></div>
+<div class="seg"><span class="ts">11:01</span><span>I&#x27;m so proud to introduce you to The Bundle, my three best-selling all-natural and effective supplements to reduce leaks,</span></div>
+<div class="seg"><span class="ts">11:08</span><span>eliminate constipation, and say goodbye to vaginal dryness.</span></div>
+<div class="seg"><span class="ts">11:13</span><span>You can reverse pelvic muscle aging and get stronger pelvic floor muscles with Buff Plus.</span></div>
+<div class="seg"><span class="ts">11:19</span><span>Buff Plus lets you reclaim pelvic control and function with its three powerhouse ingredients, creatine, peptidistrong, and fulvic acid.</span></div>
+<div class="seg"><span class="ts">11:28</span><span>Creatine is a natural molecule that fuels energy production in every muscle and cell, including your pelvic floor muscles.</span></div>
+<div class="seg"><span class="ts">11:36</span><span>This means you&#x27;ll have more energy to keep doing your Buff Muff exercises consistently, so you can say goodbye to leaks faster.</span></div>
+<div class="seg"><span class="ts">11:44</span><span>Creatine can help improve muscle mass, strength, and potentially bone health.</span></div>
+<div class="seg"><span class="ts">11:48</span><span>Additionally, creatine may also have positive effects on cognitive function and brain health, too.</span></div>
+<div class="seg"><span class="ts">11:54</span><span>Next, there&#x27;s peptidistrong, which is a patented peptide or protein found in fava beans that is proven to enhance recovery and prevent muscle loss.</span></div>
+<div class="seg"><span class="ts">12:04</span><span>Two incredibly important things for any woman over the age of 35.</span></div>
+<div class="seg"><span class="ts">12:09</span><span>Then there&#x27;s fulvic acid, which is a group of trace minerals that helps nutrients penetrate your cell walls while also increasing collagen levels naturally.</span></div>
+<div class="seg"><span class="ts">12:18</span><span>Watch your hair, nails, and skin hydrate from the inside out.</span></div>
+<div class="seg"><span class="ts">12:23</span><span>So what does this mean for you?</span></div>
+<div class="seg"><span class="ts">12:25</span><span>Stronger pelvic floor contractions, so you see results from your exercises sooner.</span></div>
+<div class="seg"><span class="ts">12:30</span><span>More energy and endurance during your workouts, therapy, or everyday movement.</span></div>
+<div class="seg"><span class="ts">12:35</span><span>Improved bladder control and fewer leaks as your muscles get stronger.</span></div>
+<div class="seg"><span class="ts">12:39</span><span>Enhanced overall hydration, so you&#x27;re keeping your skin supple from within.</span></div>
+<div class="seg"><span class="ts">12:44</span><span>Faster recovery times, so you can consistently do your Buff Muff exercises.</span></div>
+<div class="seg"><span class="ts">12:49</span><span>Reduced leaks, so you can reclaim control and freedom.</span></div>
+<div class="seg"><span class="ts">12:53</span><span>Buff Plus combined with consistent Buff Muff exercises equals a leak-free and symptom-free life.</span></div>
+<div class="seg"><span class="ts">13:00</span><span>Okay, so just on this page, I have a special gift for you.</span></div>
+<div class="seg"><span class="ts">13:04</span><span>You can claim 40% off your first bundle today, and you can try the bundle risk-free with our 60-day satisfaction guarantee.</span></div>
+<div class="seg"><span class="ts">13:12</span><span>Your satisfaction is our number one priority, so if you are not satisfied after trying any of our products,</span></div>
+<div class="seg"><span class="ts">13:18</span><span>simply reach out to our amazing customer care team and we will make things right.</span></div>
+<div class="seg"><span class="ts">13:23</span><span>Just contact help at rejuve.com.</span></div>
+<div class="seg"><span class="ts">13:26</span><span>Now all you have to do is pick how many bundles you&#x27;d like to have by selecting one of the options below,</span></div>
+<div class="seg"><span class="ts">13:32</span><span>and make sure to complete your order today so you can claim a guaranteed gift with your first bundle.</span></div>
+<div class="seg"><span class="ts">13:38</span><span>I can&#x27;t wait for you to speed up your pelvic floor recovery, say goodbye to leaks, pelvic pressure, and reclaim your freedom.</span></div>
+<div class="seg"><span class="ts">13:46</span><span>And today, you can make that happen faster with the bundle.</span></div>
+<div class="seg"><span class="ts">13:50</span><span>I&#x27;m so excited to hear your success story.</span></div></div></details>
+</div></section>
+
+<section id="gallery"><div class="wrap">
+  <h2><span class="n">Screenshot Gallery</span> — The Full Journey</h2>
+  <p class="sub">97 frames from a real purchase walkthrough (17.7-min screen recording, 1 frame / 5s, deduped). Payment details redacted.</p>
+  <div class="filters">
+    <button class="on" onclick="flt('all',this)">All</button>
+    <button onclick="flt('lp',this)">Landing page</button>
+    <button onclick="flt('checkout',this)">Checkout + bump</button>
+    <button onclick="flt('upsell1',this)">Membership upsell</button>
+    <button onclick="flt('upsell2',this)">Supplement upsell</button>
+    <button onclick="flt('supp-checkout',this)">Buff+ checkout</button>
+  </div>
+  <div class="grid" id="grid">
+  <figure class="g" data-stage="lp"><img src="frames/frame_0001.jpg" loading="lazy" alt="Front-End LP (/method) at 0s" onclick="lb(this)"><figcaption>0:00 · Front-End LP (/method)</figcaption></figure>
+<figure class="g" data-stage="lp"><img src="frames/frame_0002.jpg" loading="lazy" alt="Front-End LP (/method) at 5s" onclick="lb(this)"><figcaption>0:05 · Front-End LP (/method)</figcaption></figure>
+<figure class="g" data-stage="lp"><img src="frames/frame_0003.jpg" loading="lazy" alt="Front-End LP (/method) at 10s" onclick="lb(this)"><figcaption>0:10 · Front-End LP (/method)</figcaption></figure>
+<figure class="g" data-stage="lp"><img src="frames/frame_0004.jpg" loading="lazy" alt="Front-End LP (/method) at 15s" onclick="lb(this)"><figcaption>0:15 · Front-End LP (/method)</figcaption></figure>
+<figure class="g" data-stage="lp"><img src="frames/frame_0005.jpg" loading="lazy" alt="Front-End LP (/method) at 20s" onclick="lb(this)"><figcaption>0:20 · Front-End LP (/method)</figcaption></figure>
+<figure class="g" data-stage="checkout"><img src="frames/frame_0013.jpg" loading="lazy" alt="Checkout + $14 Order Bump at 60s" onclick="lb(this)"><figcaption>1:00 · Checkout + $14 Order Bump</figcaption></figure>
+<figure class="g" data-stage="checkout"><img src="frames/frame_0015.jpg" loading="lazy" alt="Checkout + $14 Order Bump at 70s" onclick="lb(this)"><figcaption>1:10 · Checkout + $14 Order Bump</figcaption></figure>
+<figure class="g" data-stage="checkout"><img src="frames/frame_0018.jpg" loading="lazy" alt="Checkout + $14 Order Bump at 85s" onclick="lb(this)"><figcaption>1:25 · Checkout + $14 Order Bump</figcaption></figure>
+<figure class="g" data-stage="checkout"><img src="frames/frame_0021.jpg" loading="lazy" alt="Checkout + $14 Order Bump at 100s" onclick="lb(this)"><figcaption>1:40 · Checkout + $14 Order Bump</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0033.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 160s" onclick="lb(this)"><figcaption>2:40 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0035.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 170s" onclick="lb(this)"><figcaption>2:50 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0039.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 190s" onclick="lb(this)"><figcaption>3:10 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0049.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 240s" onclick="lb(this)"><figcaption>4:00 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0054.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 265s" onclick="lb(this)"><figcaption>4:25 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0058.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 285s" onclick="lb(this)"><figcaption>4:45 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0060.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 295s" onclick="lb(this)"><figcaption>4:55 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0063.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 310s" onclick="lb(this)"><figcaption>5:10 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0066.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 325s" onclick="lb(this)"><figcaption>5:25 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0067.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 330s" onclick="lb(this)"><figcaption>5:30 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0069.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 340s" onclick="lb(this)"><figcaption>5:40 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0071.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 350s" onclick="lb(this)"><figcaption>5:50 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0072.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 355s" onclick="lb(this)"><figcaption>5:55 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0073.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 360s" onclick="lb(this)"><figcaption>6:00 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0076.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 375s" onclick="lb(this)"><figcaption>6:15 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0083.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 410s" onclick="lb(this)"><figcaption>6:50 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0084.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 415s" onclick="lb(this)"><figcaption>6:55 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0086.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 425s" onclick="lb(this)"><figcaption>7:05 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0089.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 440s" onclick="lb(this)"><figcaption>7:20 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0090.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 445s" onclick="lb(this)"><figcaption>7:25 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0093.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 460s" onclick="lb(this)"><figcaption>7:40 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0102.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 505s" onclick="lb(this)"><figcaption>8:25 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0106.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 525s" onclick="lb(this)"><figcaption>8:45 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0107.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 530s" onclick="lb(this)"><figcaption>8:50 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0108.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 535s" onclick="lb(this)"><figcaption>8:55 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0109.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 540s" onclick="lb(this)"><figcaption>9:00 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0110.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 545s" onclick="lb(this)"><figcaption>9:05 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0111.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 550s" onclick="lb(this)"><figcaption>9:10 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell1"><img src="frames/frame_0113.jpg" loading="lazy" alt="Upsell 1 — Muff+ Membership at 560s" onclick="lb(this)"><figcaption>9:20 · Upsell 1 — Muff+ Membership</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0116.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 575s" onclick="lb(this)"><figcaption>9:35 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0117.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 580s" onclick="lb(this)"><figcaption>9:40 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0118.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 585s" onclick="lb(this)"><figcaption>9:45 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0119.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 590s" onclick="lb(this)"><figcaption>9:50 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0120.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 595s" onclick="lb(this)"><figcaption>9:55 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0123.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 610s" onclick="lb(this)"><figcaption>10:10 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0125.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 620s" onclick="lb(this)"><figcaption>10:20 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0126.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 625s" onclick="lb(this)"><figcaption>10:25 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0127.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 630s" onclick="lb(this)"><figcaption>10:30 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0130.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 645s" onclick="lb(this)"><figcaption>10:45 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0131.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 650s" onclick="lb(this)"><figcaption>10:50 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0132.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 655s" onclick="lb(this)"><figcaption>10:55 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0133.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 660s" onclick="lb(this)"><figcaption>11:00 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0135.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 670s" onclick="lb(this)"><figcaption>11:10 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0137.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 680s" onclick="lb(this)"><figcaption>11:20 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0139.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 690s" onclick="lb(this)"><figcaption>11:30 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0140.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 695s" onclick="lb(this)"><figcaption>11:35 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0141.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 700s" onclick="lb(this)"><figcaption>11:40 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0146.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 725s" onclick="lb(this)"><figcaption>12:05 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0151.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 750s" onclick="lb(this)"><figcaption>12:30 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0152.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 755s" onclick="lb(this)"><figcaption>12:35 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0154.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 765s" onclick="lb(this)"><figcaption>12:45 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0155.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 770s" onclick="lb(this)"><figcaption>12:50 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0156.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 775s" onclick="lb(this)"><figcaption>12:55 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0157.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 780s" onclick="lb(this)"><figcaption>13:00 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0160.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 795s" onclick="lb(this)"><figcaption>13:15 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0161.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 800s" onclick="lb(this)"><figcaption>13:20 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0162.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 805s" onclick="lb(this)"><figcaption>13:25 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0163.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 810s" onclick="lb(this)"><figcaption>13:30 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0165.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 820s" onclick="lb(this)"><figcaption>13:40 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0166.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 825s" onclick="lb(this)"><figcaption>13:45 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0168.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 835s" onclick="lb(this)"><figcaption>13:55 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0169.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 840s" onclick="lb(this)"><figcaption>14:00 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0170.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 845s" onclick="lb(this)"><figcaption>14:05 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0176.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 875s" onclick="lb(this)"><figcaption>14:35 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0177.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 880s" onclick="lb(this)"><figcaption>14:40 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0178.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 885s" onclick="lb(this)"><figcaption>14:45 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0180.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 895s" onclick="lb(this)"><figcaption>14:55 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0181.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 900s" onclick="lb(this)"><figcaption>15:00 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0183.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 910s" onclick="lb(this)"><figcaption>15:10 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0184.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 915s" onclick="lb(this)"><figcaption>15:15 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0186.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 925s" onclick="lb(this)"><figcaption>15:25 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0189.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 940s" onclick="lb(this)"><figcaption>15:40 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0190.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 945s" onclick="lb(this)"><figcaption>15:45 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0196.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 975s" onclick="lb(this)"><figcaption>16:15 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0197.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 980s" onclick="lb(this)"><figcaption>16:20 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0198.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 985s" onclick="lb(this)"><figcaption>16:25 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0200.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 995s" onclick="lb(this)"><figcaption>16:35 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0202.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 1005s" onclick="lb(this)"><figcaption>16:45 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0204.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 1015s" onclick="lb(this)"><figcaption>16:55 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0205.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 1020s" onclick="lb(this)"><figcaption>17:00 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0206.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 1025s" onclick="lb(this)"><figcaption>17:05 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="upsell2"><img src="frames/frame_0207.jpg" loading="lazy" alt="Upsell 2 — Buff+ Supplement at 1030s" onclick="lb(this)"><figcaption>17:10 · Upsell 2 — Buff+ Supplement</figcaption></figure>
+<figure class="g" data-stage="supp-checkout"><img src="frames/frame_0208.jpg" loading="lazy" alt="Buff+ Checkout at 1035s" onclick="lb(this)"><figcaption>17:15 · Buff+ Checkout</figcaption></figure>
+<figure class="g" data-stage="supp-checkout"><img src="frames/frame_0209.jpg" loading="lazy" alt="Buff+ Checkout at 1040s" onclick="lb(this)"><figcaption>17:20 · Buff+ Checkout</figcaption></figure>
+<figure class="g" data-stage="supp-checkout"><img src="frames/frame_0210.jpg" loading="lazy" alt="Buff+ Checkout at 1045s" onclick="lb(this)"><figcaption>17:25 · Buff+ Checkout</figcaption></figure>
+<figure class="g" data-stage="supp-checkout"><img src="frames/frame_0211.jpg" loading="lazy" alt="Buff+ Checkout at 1050s" onclick="lb(this)"><figcaption>17:30 · Buff+ Checkout</figcaption></figure>
+<figure class="g" data-stage="supp-checkout"><img src="frames/frame_0212.jpg" loading="lazy" alt="Buff+ Checkout at 1055s" onclick="lb(this)"><figcaption>17:35 · Buff+ Checkout</figcaption></figure>
+<figure class="g" data-stage="supp-checkout"><img src="frames/frame_0213.jpg" loading="lazy" alt="Buff+ Checkout at 1060s" onclick="lb(this)"><figcaption>17:40 · Buff+ Checkout</figcaption></figure>
+  </div>
+</div></section>
+
+<section id="tech"><div class="wrap">
+  <h2><span class="n">Tech Stack</span> &amp; Compliance Flags</h2>
+  <div class="two">
+  <div class="card"><h3 style="margin-top:0">Stack</h3><ul class="stack copy">
+    <li><b>Pages/checkout:</b> ClickFunnels 2.0 (myclickfunnels statics, native one-click upsells, saved-payment "We Recognize You" SMS/email identity prefill)</li>
+    <li><b>Video:</b> VTurb / ConvertAI smartplayer (HLS), burned-in caption style on upsell videos</li>
+    <li><b>Tracking:</b> Meta Pixel · GA4/GTM · TikTok · <b>Hyros</b> (serious attribution spend) · Microsoft Clarity</li>
+    <li><b>Split tests running:</b> welcome page variant <code>-d</code>, final-step variant <code>-4</code>, two VSL lengths on the supplement page (6 min &amp; 14 min)</li>
+    <li><b>Timers:</b> ClickFunnels Countdown/V1 widgets (evergreen, client-side) + "coupon valid 24 hours" email-gate</li>
+  </ul></div>
+  <div class="card"><h3 style="margin-top:0">Compliance flags (don't copy these)</h3>
+  <div class="flag" style="margin:10px 0"><h4>⚠ "Your Order Is Not Complete"</h4><p class="copy">Displayed when the order IS complete — the dark-pattern language the FTC cites in negative-option/deceptive-flow cases.</p></div>
+  <div class="flag" style="margin:10px 0"><h4>⚠ No FDA disclaimer on supplement page</h4><p class="copy">Buff+ page promises to "reduce leaks", "reverse pelvic muscle aging", help "prolapse symptoms" — disease claims with no "not intended to diagnose/treat/cure" block anywhere on the page.</p></div>
+  <div class="flag" style="margin:10px 0"><h4>⚠ Pre-checked order bump</h4><p class="copy">$14 bump arrives checked by default — conversion-positive but increasingly cited in FTC click-to-cancel / negative-option enforcement.</p></div>
+  </div></div>
+</div></section>
+
+<section id="steal"><div class="wrap">
+  <h2><span class="n">Steal This</span> — Application Notes</h2>
+  <div class="card"><ul class="stack">
+    <li><b>Backend-first economics:</b> the front-end course is a break-even acquisition offer; membership + supplement carry the P&amp;L. For a hardware pelvic trainer: device = entry offer → app/personalized-plan membership → companion supplement (validated here with zero hardware).</li>
+    <li><b>"Upgrade" framing beats "offer" framing:</b> "You Have Been Upgraded" + "Accept My Upgrade" converts a sales decision into a confirmation decision.</li>
+    <li><b>Personalization as the bonus:</b> the free "Personalized 8-week Plan based on YOUR symptoms" is quiz output dressed as a gift — near-zero marginal cost, high perceived value.</li>
+    <li><b>Dimension-split upsells:</b> outcome → duration → velocity. Design each ascension step to sell a different axis so nothing feels like a re-pitch.</li>
+    <li><b>Speed is the cleanest supplement angle:</b> "works WITH the exercises you just bought" sidesteps the standalone-efficacy fight entirely.</li>
+    <li><b>Trial language on annual plans:</b> "30-day trial + 1-click cancel" lets them charge $147 upfront while feeling refundable.</li>
+    <li><b>Bonus naming:</b> every bonus is named after the outcome ("Leak-Free Starter Bundle", "Bladder Boss"), never the format ("PDF guide").</li>
+  </ul></div>
+</div></section>
+
+<footer><div class="wrap">
+  Competitor research teardown · captured Jul 5, 2026 from a live purchase · Buff Muff® and all quoted copy © Kim Vopni / Vagina Coach — reproduced here for internal competitive analysis only.
+</div></footer>
+
+<div id="lightbox" onclick="this.style.display='none'"><img id="lbimg" alt=""></div>
+<script>
+function lb(img) { document.getElementById('lbimg').src = img.src; document.getElementById('lightbox').style.display='flex'; }
+function flt(k, btn) {
+  document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('#grid .g').forEach(g=>{ g.style.display = (k==='all'||g.dataset.stage===k)?'':'none'; });
+}
+</script>
+</body></html>
